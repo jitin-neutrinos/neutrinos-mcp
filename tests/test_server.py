@@ -9,6 +9,7 @@ in-band rather than shipped silently.
 
 from __future__ import annotations
 
+import re
 import sys
 from pathlib import Path
 
@@ -62,6 +63,19 @@ class TestCallTool:
         payload, is_error = server.call_tool("fetch_document", {"ref": "../../etc/passwd"})
         assert is_error
         assert payload["status"] in (400, 422)
+
+    def test_index_built_at_is_strict_rfc3339(self):
+        """`jsonschema`'s own format check for `date-time` is lenient enough to
+        accept a bare local-time string with no offset at all (confirmed by
+        testing it directly) -- so schema validation passing here proves
+        nothing. This is the check that actually caught the real bug: Claude
+        Desktop's MCP client enforces the stricter RFC 3339 rule that a
+        date-time value MUST carry a "Z" or a numeric offset."""
+        payload, is_error = server.call_tool("list_products", {})
+        assert not is_error
+        ts = payload["index_built_at"]
+        assert re.match(r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?(Z|[+-]\d{2}:\d{2})$", ts), \
+            f"index_built_at {ts!r} has no RFC 3339 time-offset"
 
     def test_output_never_leaks_private_underscore_keys(self, any_ref):
         payload, _ = server.call_tool("search_docs", {"query": "data binding"})

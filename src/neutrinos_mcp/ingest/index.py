@@ -25,6 +25,7 @@ import sqlite3
 import sys
 import time
 from collections import defaultdict
+from datetime import datetime, timezone
 from pathlib import Path
 
 import numpy as np
@@ -290,7 +291,13 @@ def build(backend: str | None = None, limit: int | None = None) -> dict:
         "vector_backend": backend,
         "corpus_hash": corpus_hash,
         "publications_yaml_hash": pub_hash,
-        "built_at": time.strftime("%Y-%m-%dT%H:%M:%S"),
+        # RFC 3339 requires a time-offset ("Z" or +HH:MM) on a date-time value;
+        # `time.strftime` produced neither (bare local time, no zone at all) --
+        # valid enough for Python's own lenient `datetime.fromisoformat`, but
+        # rejected by stricter RFC 3339 validators (confirmed: Claude Desktop's
+        # MCP client rejected `index_built_at` built this way). `list_products`
+        # additionally coerces older manifests built before this fix.
+        "built_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
         "topic_count": str(len(topic_rows)),
         "chunk_count": str(len(chunk_rows)),
     }

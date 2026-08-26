@@ -11,6 +11,7 @@ responsible for three things the schemas alone cannot enforce:
 
 from __future__ import annotations
 
+from datetime import datetime, timezone
 from typing import Any, Callable
 
 from ..config import settings
@@ -26,6 +27,31 @@ def est_tokens(text: str) -> int:
     """Cheap character-based estimate; exact counting is not worth a tokenizer
     load on the serve path, and the cap only needs to be approximately right."""
     return max(1, int(len(text) / 3.6))
+
+
+def _rfc3339(ts: str) -> str:
+    """Coerce a manifest timestamp into RFC 3339 for `list_products.index_built_at`.
+
+    RFC 3339 requires a time-offset ("Z" or +HH:MM); Python's own
+    `datetime.fromisoformat` does not, so a bare local-time string parses fine
+    here and still fails a strict client-side validator (confirmed: this was
+    accepted internally but rejected by Claude Desktop's MCP client).
+    `ingest.index` writes a correct value going forward, but this also has to
+    cover every index built before that fix without requiring a rebuild —
+    an already-shipped manifest is exactly the kind of stored value this
+    handler cannot assume matches the current code's expectations. The
+    original offset cannot be recovered after the fact, so a bare value is
+    treated as UTC rather than left invalid.
+    """
+    if not ts:
+        return ts
+    try:
+        dt = datetime.fromisoformat(ts)
+    except ValueError:
+        return ts
+    if dt.tzinfo is None:
+        dt = dt.replace(tzinfo=timezone.utc)
+    return dt.isoformat()
 
 
 def _trim_passage(text: str, max_tokens: int) -> tuple[str, bool]:
@@ -255,7 +281,7 @@ def list_products(kb: KnowledgeBase, args: dict) -> dict:
                                         cfg["staleness.aging_months"])
     return {
         "products": prods,
-        "index_built_at": kb.manifest.get("built_at", ""),
+        "index_built_at": _rfc3339(kb.manifest.get("built_at", "")),
         "total_topics": int(kb.manifest.get("topic_count", 0)),
     }
 

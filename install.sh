@@ -61,7 +61,40 @@ echo "🐍 Setting up Python virtual environment..."
 python3 -m venv .venv
 
 echo "📦 Installing package and dependencies..."
-./.venv/bin/python -m pip install -e . --quiet
+# Live per-package progress rather than --quiet silence. pip has no built-in
+# "X of Y packages" mode -- getting an exact total ahead of time means a
+# `--dry-run --report` pass first, which costs roughly as much time as the
+# real install (measured: +67s on this project's 93-package tree, almost
+# entirely PyPI metadata resolution) just to know a number. Not worth
+# doubling install time for a cosmetic total, so this shows a running count
+# with no fixed denominator instead -- free, and still answers "which
+# dependency is installing now" and "is it making progress" live.
+# `-u` (PYTHONUNBUFFERED): without it, pip's output is block-buffered when
+# piped rather than going to a terminal, so nothing would appear until it's
+# already done -- defeating the point.
+pkg_count=0
+./.venv/bin/python -u -m pip install -e . 2>&1 | while IFS= read -r line; do
+    line="${line%$'\r'}"
+    case "$line" in
+        "Collecting "*)
+            pkg=$(printf '%s' "$line" | sed -E 's/^Collecting ([A-Za-z0-9_.-]+).*/\1/')
+            pkg_count=$((pkg_count + 1))
+            printf "\r  [%d] Installing: %-40s" "$pkg_count" "$pkg"
+            ;;
+        "Installing collected packages:"*)
+            # Resolution is done; pip now downloads/unpacks wheels with no
+            # further per-package output until the very end -- this can be
+            # the LONGEST silent stretch (large wheels like onnxruntime), so
+            # without this line the display looks hung right when a fresh
+            # machine with no wheel cache needs reassurance most.
+            printf "\n  Downloading and unpacking %d packages, this can take a while...\n" "$pkg_count"
+            ;;
+        "Successfully installed"*)
+            printf "  ✅ %s\n" "$line"
+            ;;
+    esac
+done
+echo
 
 mkdir -p data
 

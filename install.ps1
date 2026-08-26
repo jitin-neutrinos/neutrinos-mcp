@@ -76,7 +76,39 @@ try {
     # still allowing python.exe itself (confirmed on this project's own dev
     # machine) -- `-m pip` runs pip as a module inside the already-allowed
     # interpreter instead of spawning the separate wrapper executable.
-    & ".\.venv\Scripts\python.exe" -m pip install -e . --quiet
+    #
+    # Live per-package progress rather than --quiet silence. pip has no
+    # built-in "X of Y packages" mode -- getting an exact total ahead of time
+    # means a `--dry-run --report` pass first, which costs roughly as much
+    # time as the real install (measured: +67s on this project's 93-package
+    # tree, almost entirely PyPI metadata resolution) just to know a number.
+    # Not worth doubling install time for a cosmetic total, so this shows a
+    # running count with no fixed denominator instead -- free, and still
+    # answers "which dependency is installing now" and "is it making
+    # progress" live. Deliberately NOT `2>&1` here: in Windows PowerShell 5.1,
+    # merging a native command's stderr into the pipeline wraps every stderr
+    # line as a terminating ErrorRecord under $ErrorActionPreference = "Stop"
+    # (confirmed directly -- it is what made a successful `git clone` look
+    # like a failure while testing this very install flow). pip's progress
+    # lines go to stdout already, and unredirected stderr still prints
+    # straight to the console on its own, so nothing is lost by leaving it be.
+    $pkgCount = 0
+    & ".\.venv\Scripts\python.exe" -u -m pip install -e . | ForEach-Object {
+        if ($_ -match '^Collecting\s+([A-Za-z0-9_.\-]+)') {
+            $pkgCount++
+            Write-Host ("`r  [{0}] Installing: {1,-40}" -f $pkgCount, $matches[1]) -NoNewline
+        } elseif ($_ -match '^Installing collected packages:') {
+            # Resolution is done; pip now downloads/unpacks wheels with no
+            # further per-package output until the very end -- this can be
+            # the LONGEST silent stretch (large wheels like onnxruntime), so
+            # without this line the display looks hung right when a fresh
+            # machine with no wheel cache needs reassurance most.
+            Write-Host "`n  Downloading and unpacking $pkgCount packages, this can take a while..."
+        } elseif ($_ -match '^Successfully installed') {
+            Write-Host "  Done: $_"
+        }
+    }
+    Write-Host ""
     Assert-LastExitCode "pip install -e ."
 
     New-Item -ItemType Directory -Force -Path data | Out-Null
