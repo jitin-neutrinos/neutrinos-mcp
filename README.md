@@ -9,34 +9,49 @@ full design rationale (architecture decisions, data model, evaluation methodolog
 
 ## Quick start
 
-`neutrinos-mcp` is a **private** repo, so every option below needs a machine that's already
-authenticated to it — `git` configured with a credential that can clone it (credential
-manager / PAT / SSH key), or `gh auth login` already run. Without that, cloning just fails
-with a 404, not a permissions error, which is easy to misread as "the repo doesn't exist."
+`neutrinos-mcp` is a **private** repo, so every option below needs `gh auth login` already run
+(for fetching the installer script itself and the release DB) *and* `git` configured with a
+credential that can clone it — credential manager, PAT, or SSH key (the installer's own `git
+clone`/`git pull` step needs this even though the one-liner itself doesn't). Without that,
+either step fails with a 404, not a permissions error, which is easy to misread as "the repo
+doesn't exist."
 
 **macOS/Linux — one line:**
 
 ```bash
-git clone https://github.com/jitin-neutrinos/neutrinos-mcp.git ~/.neutrinos-mcp; bash ~/.neutrinos-mcp/install.sh
+curl -fsSL -H "Authorization: token $(gh auth token)" https://raw.githubusercontent.com/jitin-neutrinos/neutrinos-mcp/master/install.sh | bash
 ```
 
 **Windows (PowerShell) — one line:**
 
 ```powershell
-git clone https://github.com/jitin-neutrinos/neutrinos-mcp.git $HOME\.neutrinos-mcp; & "$HOME\.neutrinos-mcp\install.ps1"
+iex (irm -Headers @{Authorization="token $(gh auth token)"} https://raw.githubusercontent.com/jitin-neutrinos/neutrinos-mcp/master/install.ps1)
 ```
 
-Both are `git clone` followed by the platform installer, chained with `;` rather than `&&`/`&&`
-equivalents so a rerun still proceeds even though the clone step then fails harmlessly ("already
-exists") — `install.sh`/`install.ps1` each do their own `git pull` in that case, so reruns are
-safe. Either script: creates a venv, installs the package (`python -m pip install -e .` — never
-a bare `pip`/`pip.exe`, since that executable specifically gets blocked by execution policy on
-some locked-down corporate machines while `python.exe` itself is still allowed), fetches the
-latest pre-built `data/neutrinos.db` from the newest GitHub release via `gh release download` if
-`gh` is installed (otherwise the running server fetches it on first use instead — see
-Distribution below), and registers `neutrinos-docs` with Claude Code at **user scope** (every
-project, not just this one). **Start a new Claude Code session afterward** — a server registered
-mid-session isn't picked up until the client reconnects.
+Each fetches the installer script itself (not the whole repo) and runs it directly — earlier
+versions of this README had the one-liner do its own `git clone` first and then invoke the
+script from inside it, which duplicated the script's own clone step and, on a machine with a
+stale `~/.neutrinos-mcp` left by an interrupted previous run, failed at that outer clone before
+the script ever got a chance to detect and clean up the mess (`git clone` refuses to run at all
+against a non-empty target). Fetching just the script and letting it manage the target
+directory itself avoids that class of bug entirely.
+
+Each script: checks whether an install already exists there and is genuinely complete (a
+`.install_complete` marker written only at the end of a prior successful run) — if so it updates
+in place (`git pull`); if a directory exists but isn't marked complete (wreckage from an
+interrupted run, exactly what caused the bug above), it's removed before cloning fresh. It then
+creates a venv, installs the package (`python -m pip install -e .` — never a bare `pip`/`pip.exe`,
+since that executable specifically gets blocked by execution policy on some locked-down corporate
+machines while `python.exe` itself is still allowed), fetches the latest pre-built
+`data/neutrinos.db` from the newest GitHub release via `gh release download` if `gh` is installed
+(otherwise the running server fetches it on first use instead — see Distribution below), and
+registers `neutrinos-docs` with Claude Code at **user scope** (every project, not just this one).
+**If anything up through the package install fails, everything the run created is removed before
+it exits** — a failed attempt never leaves wreckage behind to break the next one; a failure in the
+DB fetch or Claude Code registration steps does not, since a working local install that just
+hasn't fetched its DB yet, or still needs manual registration, isn't "failed." **Start a new
+Claude Code session afterward** — a server registered mid-session isn't picked up until the
+client reconnects.
 
 To build from source instead of using the pre-built release DB:
 
