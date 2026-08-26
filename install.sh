@@ -5,7 +5,7 @@ echo "🚀 Installing neutrinos-mcp for Claude Code..."
 
 # Set paths
 INSTALL_DIR="$HOME/.neutrinos-mcp"
-REPO_URL="https://github.com/neutrinos/neutrinos-mcp.git"
+REPO_URL="https://github.com/jitin-neutrinos/neutrinos-mcp.git"
 
 # Clone or update repository
 if [ -d "$INSTALL_DIR" ]; then
