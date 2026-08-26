@@ -1,0 +1,268 @@
+# Properties
+
+<https://documentation.neutrinos.com/articles/#!ai-hub/properties-1-1>
+
+## Properties
+
+### group_callback_url?
+
+> `optional` **group_callback_url**: `string`
+
+Defined in: [services/classification/doc/dto/create-batch.dto.ts:91](https://bitbucket.org/bhivedevs/idp-inference-sdk/src/master/src/services/classification/doc/dto/create-batch.dto.ts#lines-91)
+
+Optional callback URL to receive batch group processing results.
+
+If provided, this URL will be called with the batch processing results once the batch
+ group has been processed.
+
+#### Example
+
+```code
+'https://example.com/group-callback'
+```
+
+### is_file
+
+> **is_file**: `boolean`
+
+Defined in: [services/classification/doc/dto/create-batch.dto.ts:102](https://bitbucket.org/bhivedevs/idp-inference-sdk/src/master/src/services/classification/doc/dto/create-batch.dto.ts#lines-102)
+
+Indicates whether this batch was created from document/file inputs.
+
+This field helps identify batches that are initiated through file uploads
+ as opposed to API-based or inline data.
+
+#### Default
+
+```code
+true
+```
+
+#### Example
+
+```code
+true
+```
+
+### _id
+
+> **_id**: `string`
+
+Defined in: [services/dto/create-batch.dto.ts:142](https://bitbucket.org/bhivedevs/idp-inference-sdk/src/master/src/services/dto/create-batch.dto.ts#lines-142)
+
+MongoDB ObjectId for the created batch.
+ This is the primary identifier for the batch document.
+
+#### Example
+
+```code
+'64c13f63e85f3e6a4c1f8f99'
+```
+
+#### Inherited from
+
+`ICreateBatchResponse._id`
+
+### training_config_id
+
+> **training_config_id**: `string`
+
+Defined in: [services/dto/create-batch.dto.ts:149](https://bitbucket.org/bhivedevs/idp-inference-sdk/src/master/src/services/dto/create-batch.dto.ts#lines-149)
+
+MongoDB ObjectId referencing the training configuration used for the batch.
+
+#### Example
+
+```code
+'64c1401aebf02c76ef098cde'
+```
+
+#### Inherited from
+
+`ICreateBatchResponse.training_config_id`
+
+### training_id
+
+> **training_id**: `string`
+
+Defined in: [services/dto/create-batch.dto.ts:156](https://bitbucket.org/bhivedevs/idp-inference-sdk/src/master/src/services/dto/create-batch.dto.ts#lines-156)
+
+MongoDB ObjectId referencing the training job associated with the batch.
+
+#### Example
+
+```code
+'64c141c3f10cdb7a28e93bfa'
+```
+
+#### Inherited from
+
+`ICreateBatchResponse.training_id`
+
+### tenant_id
+
+> **tenant_id**: `string`
+
+Defined in: [services/dto/create-batch.dto.ts:163](https://bitbucket.org/bhivedevs/idp-inference-sdk/src/master/src/services/dto/create-batch.dto.ts#lines-163)
+
+MongoDB ObjectId representing the tenant that initiated the batch.
+
+#### Example
+
+```code
+'64c1428ef8a8e67be21c2a12'
+```
+
+#### Inherited from
+
+`ICreateBatchResponse.tenant_id`
+
+### deployment_id
+
+> **deployment_id**: `string`
+
+Defined in: [services/dto/create-batch.dto.ts:170](https://bitbucket.org/bhivedevs/idp-inference-sdk/src/master/src/services/dto/create-batch.dto.ts#lines-170)
+
+MongoDB ObjectId for the deployment used in the batch.
+
+#### Example
+
+```code
+'64c143c7f56b97b82dd233ff'
+```
+
+#### Inherited from
+
+`ICreateBatchResponse.deployment_id`
+
+### test_type
+
+> **test_type**: `string`
+
+Defined in: [services/dto/create-batch.dto.ts:178](https://bitbucket.org/bhivedevs/idp-inference-sdk/src/master/src/services/dto/create-batch.dto.ts#lines-178)
+
+Specifies the type of test performed.
+ Usually `'Batch'`.
+
+#### Example
+
+```code
+'Batch'
+```
+
+#### Inherited from
+
+`ICreateBatchResponse.test_type`
+
+### data_type
+
+> **data_type**: `string`
+
+Defined in: [services/dto/create-batch.dto.ts:186](https://bitbucket.org/bhivedevs/idp-inference-sdk/src/master/src/services/dto/create-batch.dto.ts#lines-186)
+
+Indicates the type of data being classified.
+ Example: `'Document'`, `'Text'`.
+
+#### Example
+
+```code
+'Document'
+```
+
+#### Inherited from
+
+`ICreateBatchResponse.data_type`
+
+### status
+
+> **status**: `string`
+
+Defined in: [services/dto/create-batch.dto.ts:194](https://bitbucket.org/bhivedevs/idp-inference-sdk/src/master/src/services/dto/create-batch.dto.ts#lines-194)
+
+Status of the batch.
+ Possible values: `'Created'`, `'In-Progress'`, `'Completed'`, `'Failed'`, etc.
+
+#### Example
+
+```code
+'Created'
+```
+
+#### Inherited from
+
+`ICreateBatchResponse.status`
+
+### callback_url?
+
+> `optional` **callback_url**: `string`
+
+Defined in: [services/dto/create-batch.dto.ts:201](https://bitbucket.org/bhivedevs/idp-inference-sdk/src/master/src/services/dto/create-batch.dto.ts#lines-201)
+
+The callback URL provided at batch creation, if any.
+
+#### Example
+
+```code
+'https://example.com/callback'
+```
+
+#### Inherited from
+
+`ICreateBatchResponse.callback_url`
+
+### metadata?
+
+> `optional` **metadata**: `Record`<`string`, `any`>
+
+Defined in: [services/dto/create-batch.dto.ts:214](https://bitbucket.org/bhivedevs/idp-inference-sdk/src/master/src/services/dto/create-batch.dto.ts#lines-214)
+
+User-defined metadata associated with the batch.
+
+#### Example
+
+```code
+{
+  "initiated_by": "scheduler",
+  "notes": "Run at midnight"
+}
+```
+
+#### Inherited from
+
+`ICreateBatchResponse.metadata`
+
+### created_at
+
+> **created_at**: `string`
+
+Defined in: [services/dto/create-batch.dto.ts:221](https://bitbucket.org/bhivedevs/idp-inference-sdk/src/master/src/services/dto/create-batch.dto.ts#lines-221)
+
+ISO 8601 timestamp indicating when the batch was created.
+
+#### Example
+
+```code
+'2023-01-01T00:00:00Z'
+```
+
+#### Inherited from
+
+`ICreateBatchResponse.created_at`
+
+### updated_at
+
+> **updated_at**: `string`
+
+Defined in: [services/dto/create-batch.dto.ts:228](https://bitbucket.org/bhivedevs/idp-inference-sdk/src/master/src/services/dto/create-batch.dto.ts#lines-228)
+
+ISO 8601 timestamp indicating when the batch was last updated.
+
+#### Example
+
+```code
+'2023-01-01T01:00:00Z'
+```
+
+#### Inherited from
+
+`ICreateBatchResponse.updated_at`

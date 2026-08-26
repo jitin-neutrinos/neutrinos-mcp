@@ -1,0 +1,13 @@
+# Example
+
+<https://documentation.neutrinos.com/articles/#!ai-hub/example-3>
+
+## Example
+
+```code
+const dto: IClassificationStartBatchDto = {
+  token: '1234567890abcdef',
+  batch_id: '64f1d0e01c9a4f0012ab3456',
+  batch_size: 50
+};
+```

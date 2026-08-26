@@ -1,0 +1,141 @@
+# Release 9.2.0
+
+<https://documentation.neutrinos.com/articles/#!change-log/release-9-2-0>
+
+**Features:**
+
+- Autocompletions for `bh`, `page` and other predefined objects.
+- Autocompletions automatically appear when type selected from dropdown or when input field clicked.
+- Enabled Oracle Support in Data Models.
+- Backdrop click for sidenav attribute window of property, relation, dm-config and operation is added.
+- Added the click navigation to the flowpicker chip in attribute window.
+- Entity List added as Children for DataModel in DM Explorer Tree.
+- Added monaco-code-editor widget.
+- Required icon added to entity attribute for the required fields of entity.
+- DDL Explorer and DDL editor UI is added to explore all the ddl downloaded of the Data Model.
+- Export dialog, added to show the new downloaded DDL.
+- Typeorm updated to 0.3.11
+- Minimum nodejs version changed to 14.x.x
+- Minimum npm version changed to 6.14.4
+- New dm-routes file to save DM Routes
+- DM Processor flows will now respond with custom Error message, status code.
+- Switch Node Introduced **is status code** condition, to check if the selected variable is a valid status code.
+- Added all the missing data types in Postgres, Oracle, MySQL DB.
+- Non-required attributes can accept null value.
+- Created New API to get all app-ddl-data and show it as a Tree data explorer in Data-Model-ddl workspace.
+- Following nodes changed to be compatible with new Typeorm update - Global Session - DM Utils and Nodes - find, insert, remove, update - Execute SQL node.
+- DM Processor flows will now respond with custom Error message, status code.
+- Switch Node Introduced **is status code** condition, to check if the selected variable is a valid status code.
+- SSD HttpRequestNode Added "as is" type to "URL" field.
+- Added **OnUpdateEntity** hook in operation nodes, this will get invoked when entity or data- is modified.
+
+**Bug Fixes:**
+
+- Clicking on `About neutrinos` in the studio workspace redirecting to GoDaddy website.
+- Changing back ERD type from DB to abstract not checking for Entities without attributes.
+- The terminal for client remains blank.
+- Duplicate name for error handler function.
+- Nodes UI overflow issue for the typedInput autocomplete panel
+- Removed Object attribute type for MSSQL.
+- Fixed UI Height brakes while open the sidenav and switching to different tab.
+- Fixed the bug when the entity name is any of the attribute types (Js types).
+- Fixed an issue where some menu items became unclickable when Settings and service menu is opened.
+- Fixed the double click issue on dm entity canvas (earlier it was triple click).
+- Delete erd Response is not Showing.
+- Error response from saveAll api is not showing.
+- Fixed issue of Breaking UI in DM-edit-entity dialog while creating new check constraint.
+- Change is detected when we draw the wire, but does not connect to any other node.
+- Type Date should not be Primary key.
+- Removed Object attribute type for Oracle.
+- Handle DB change Scenarios.
+- Form Validation issue in dm-db-config side-nav for.
+- Constraint table in Edit-entity-dialog alignment issue.
+- Dummy attribute should be filtered out from the columns of unique and index constraint in Edit-entity-dialog.
+- Precision always takes default value even if user removes the value of it, in the attribute side-nav.
+- Changed Synchronize field from input field to select field in dm-db-config-sidenav.
+- Copying Entity name copies the whole Entity.
+- Remove data-type [time] in Oracle Database.
+- Same data model name for two data models at any levels in the DM explorer Tree is not allowed
+- Saving O2M relation in abstract type throwing error
+- Relation attribute window header component should be fixed on scroll
+- Required array is updating based on Primary generated column value
+- In DM user-list, show only used service instead all the services
+- If entity updated in the SSD operations node it's not getting updated in Entity Users list-
+- Explorer tree is closing on discarding the changes
+- Scroll bar fix, It no longer resets the scroll bar to the top on changing the tabs for all editors.
+- If Entity or Data-model is deleted, makes user (ssd-Operation-nodes) invalid.
+- Call Service node is not updating after adding new Start type flow node.
+- Users list message is added when no users of start type node is present.
+- While creating a oracle-db in data-model db-config attribute window, save button is disabled.
+- In data-model db-config attribute window, "connection-name" field should be required and can't be duplicated.
+- Snackbar with the message added for all the operations of Folder, DM, and Entity.
+- Drawing Relation from the Primary Key is disabled.
+- Select Complex Data type from attribute properties window disabled.
+- After create, rename of DataModel or folder, search tree in DataModel-explorer is not updating.
+- Advance fields are opening and closing on the Open of edit attributes is fixed.
+- Edit Entity dialog box is closing on outside click.
+- Delete confirmation dialog is repeating after deleting all dataModels.
+- Abstract type DM showing invalid after after adding one or more attributes.
+- Save or saveAll api is only called when there is some change to save.
+- Removed the create `classic app` button from the UI.
+- Issue in generating the node function Name from the user input node name.
+- Unable to export `SOAP` Node or flow, if the flow have `SOAP` node in it.
+- Entity Users are not updating after discarding operation nodes in SSD flow.
+- Unable to save the data model after relation drawn from entity-1 to entity-2 and reverse by selecting complex. type from attribute type dropdown in abstract models.
+- Navigation to data model or Entity from SSD dm-operation nodes is not working.
+- Primary Key icon should be removed from entity attribute, if type primary key changed to date.
+- Notify user when there is no Entities saved, while downloading the ddl of data model.
+- Entity expansion panel is expanding on discard.
+- The false value is overridden by none in the default field of the entity attribute window if the attribute type is boolean.
+- Deleting Data-Model when an Entity is invalid breaks the studio.
+- Rename Entity with having relation, breaks the UI.
+- dm-routes.ts file is overriding with the new routes or become empty after every save or saveAll in DataModel.
+- Duplicate entity attributes name are generating in required array of the entity.json file.
+- After renaming the data model and subsequently deleting it, the Snackbar still displays the old data model name.
+- Duplicate Attribute name handled in Relation-id.
+- Entity users are not re-updating after discard the changes.
+- For the oracle database, all the required properties are getting in optional fields.
+- Snackbar message is not populating after renaming the folder.
+- Pre flow - DM.
+- If we rename the DM processor node that is related to entity is not updating in the operation properties.
+- If we rename the DM processor node that is related to entity is not updating in the entity.json file
+- Error message displayed in swagger "Error: Internal Server Error" If we rename the DM processor node that is related to entity.
+- Unnecessary attributes are removed from the abstract type relations.
+- Unable to create a data model or folder outside of existing folder, if the folder is active or focused.
+- Autocompletions for `bh` predefined objects dropdown not working only for page Flows.
+- In data model edit entity dialog UI is breaking.
+- All the explorers are not updating after close of the search field.
+- There should not be white spaces before the connection name in data model db-config properties.
+- User able to see the deleted entity in dm operation nodes.
+- When user deletes the entity, many to one relation line are not deleting.
+- After discard of the data model, every data model changes are getting cleared.
+- The value entered in the "default" text field in the attribute window disappears when user clicks on advance expansion panel.
+- User is not able to view "name is required" error message and also save button is not disabled in attribute window.
+- Preventing the generation of new operation id on every save in dataModels.
+- Reading primary column types from the config files.
+- Preventing duplication of Server start scripts when missing plugins re-added.
+- Change the error response thrown by saveAll api.
+- Migrating to 9.2.0 from 9.1.1 does not clear all the imports for "ndefault-sql" node package.
+- "typeormUtils" file is not migrated when migrating from 911 to 920.
+- Studio not starting after deleting the `.neutrinos`.
+- Proper DDL error message to a Snackbar issue.
+- Empty error body message while saving Abstract Data-model.
+- Failed to save data-model when db-type is abstract.
+- Post flow should not be there in operation codegen when db-type is abstract.
+- Current-date syntax error in DDL.
+- Rename folder in DataModel fix.
+- dm-routes.ts file is overriding with the new routes or become empty after every save or saveAll in DataModel.
+- If we rename the DM processor node that is related to entity is not updating in the entity.json file.
+- For the oracle database, all the required properties are getting in optional fields.
+- Migration is written to remove unnecessary attributes from old abstract type relations.
+- Migration for **onUpdate** and **onDelete** key is relation are replaced by default value.
+- DM-routes deleting while migration to 9.2.0 for some apps.
+- Unable to save DM processor node after migration
+- Sonar Issue - Unnecessary imports are removed.
+- MongoDB- `delete` and `downloadFile` file issue.
+- IDS session error due to incorrect column type for oracle db.
+- Removed "client env" from "URL" field and added "server env" - SSD Node.
+- Selected DataModel Entity is not populating in the Node Attribute window UI - SSD Http In-out node.
+- Http status code validation done for `statusCode` field.
+- After migration, getting arguments for tracer Survive, node function Name is changing to nodeId even if function name is present.
+- Unable to DM processor node after introducing status code validation for status code variable.

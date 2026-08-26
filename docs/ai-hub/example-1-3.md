@@ -1,0 +1,31 @@
+# Example
+
+<https://documentation.neutrinos.com/articles/#!ai-hub/example-1-3>
+
+## Example
+
+```code
+{
+  "data": [
+    {
+      "_id": "64f1d0e01c9a4f0012ab3456",
+      "training_config_id": "64f1d0e01c9a4f0012ab1111",
+      "training_id": "64f1d0e01c9a4f0012ab2222",
+      "deployment_id": "64f1d0e01c9a4f0012ab3333",
+      "test_type": "Batch",
+      "data_type": "Document",
+      "status": "Completed",
+      "file_name": "test.json",
+      "file_uuid": "123e4567-e89b-12d3-a456-426614174000",
+      "file_url": "https://example.com/test.json",
+      "file_id": "64f1d0e01c9a4f0012ab4444",
+      "metadata": {
+        "source": "web-upload"
+      },
+      "created_at": "2023-01-01T00:00:00Z",
+      "updated_at": "2023-01-02T00:00:00Z"
+    }
+  ],
+  "count": 1
+}
+```

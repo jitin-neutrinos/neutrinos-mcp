@@ -1,0 +1,35 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+venv/
+env/
+*.egg-info/
+dist/
+build/
+.env
+
+# Project Data (Generated)
+data/*.db
+data/*.db-shm
+data/*.db-wal
+data/*.json
+data/*.jsonl
+data/*.log
+data/chroma_db/
+raw/
+
+# IDE / System / Claude Code
+.mcp.json
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+%SystemDrive%/
+
+# Scratch / Analytics scripts
+analyze_discourse.py

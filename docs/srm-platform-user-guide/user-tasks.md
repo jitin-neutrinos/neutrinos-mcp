@@ -1,0 +1,7 @@
+# User Tasks
+
+<https://documentation.neutrinos.com/articles/#!srm-platform-user-guide/user-tasks>
+
+As a user, you can perform the following tasks on the platform. We recommend you get familiar with the [SRM platform UI](/articles/srm-platform-user-guide/srm-platform-ui) before performing them.
+
+[Add, update, and delete contacts](/articles/srm-platform-user-guide/work-with-contacts)[Add, update, and delete deals](/articles/srm-platform-user-guide/work-with-deals)[View individual and team stats](/articles/srm-platform-user-guide/view-stats-dashboard)Add [Appointments](/articles/srm-platform-user-guide/work-with-appointments), [tasks](/articles/srm-platform-user-guide/work-with-tasks), [notes](/articles/srm-platform-user-guide/work-with-notes), [labels](/articles/srm-platform-user-guide/work-with-labels), [feedback](/articles/srm-platform-user-guide/work-with-feedback), and [documents](/articles/srm-platform-user-guide/work-with-documents)[Import Contacts](/articles/srm-platform-user-guide/import-contacts)[Place calls](/articles/srm-platform-user-guide/place-a-call) [Search contacts and deals](/articles/srm-platform-user-guide/search-contacts-and-deals)[Filter contacts and deals](/articles/srm-platform-user-guide/filter-contacts-and-deals)[Reassign contacts](/articles/srm-platform-user-guide/re-assign-contact)[Export deals and contacts to an excel sheet](/articles/srm-platform-user-guide/export-as-csv)[Perform bulk operations](/articles/srm-platform-user-guide/perform-bulk-actions)

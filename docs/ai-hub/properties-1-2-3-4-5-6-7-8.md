@@ -1,0 +1,103 @@
+# Properties
+
+<https://documentation.neutrinos.com/articles/#!ai-hub/properties-1-2-3-4-5-6-7-8>
+
+## Properties
+
+### token
+
+> **token**: `string`
+
+Defined in: [services/classification/dto/batch-test-list.dto.ts:31](https://bitbucket.org/bhivedevs/idp-inference-sdk/src/master/src/services/classification/dto/batch-test-list.dto.ts#lines-31)
+
+API token for authentication.
+
+#### Example
+
+```code
+'1234567890abcdef'
+```
+
+#### Overrides
+
+`z.infer.token`
+
+### batch_id
+
+> **batch_id**: `string`
+
+Defined in: [services/classification/dto/batch-test-list.dto.ts:38](https://bitbucket.org/bhivedevs/idp-inference-sdk/src/master/src/services/classification/dto/batch-test-list.dto.ts#lines-38)
+
+The unique MongoDB ObjectId of the batch to list tests for.
+
+#### Example
+
+```code
+"64f1d0e01c9a4f0012ab3456"
+```
+
+#### Overrides
+
+`z.infer.batch_id`
+
+### page_number
+
+> **page_number**: `number`
+
+Defined in: [services/classification/dto/batch-test-list.dto.ts:46](https://bitbucket.org/bhivedevs/idp-inference-sdk/src/master/src/services/classification/dto/batch-test-list.dto.ts#lines-46)
+
+The current page number (zero-based index).
+ Use `0` for the first page.
+
+#### Example
+
+```code
+0
+```
+
+#### Overrides
+
+`z.infer.page_number`
+
+### page_size
+
+> **page_size**: `number`
+
+Defined in: [services/classification/dto/batch-test-list.dto.ts:53](https://bitbucket.org/bhivedevs/idp-inference-sdk/src/master/src/services/classification/dto/batch-test-list.dto.ts#lines-53)
+
+Number of results to return per page.
+
+#### Example
+
+```code
+10
+```
+
+#### Overrides
+
+`z.infer.page_size`
+
+### sort?
+
+> `optional` **sort**: `"asc"` | `"desc"`
+
+Defined in: [services/classification/dto/batch-test-list.dto.ts:62](https://bitbucket.org/bhivedevs/idp-inference-sdk/src/master/src/services/classification/dto/batch-test-list.dto.ts#lines-62)
+
+Sort order for the list of results.
+ Can be either `'asc'` (ascending) or `'desc'` (descending).
+
+#### Default
+
+```code
+'desc'
+```
+
+#### Example
+
+```code
+'desc'
+```
+
+#### Overrides
+
+`z.infer.sort`

@@ -1,0 +1,580 @@
+# config/publications.yaml — the reviewed product/version map (plan §6.5)
+# generated: neutrinos_mcp.ingest.families --seed
+# source:    data/census.json (measured 2026-08-26)
+#
+# Entries marked `review: true` were grouped by measured slug overlap, not by name — they imply a product rename.
+# Confirm each against product history before this file is frozen (plan §14 Q2b).
+# A wrong family assignment produces confidently version-wrong answers (R1).
+
+aliases:
+  "App Builder": studio
+  "Server Side Service Designer": server-services-designer
+  "Service Designer": client-services-designer
+
+publications:
+  ai-hub:
+    title: "AI Hub"
+    product: "AI Hub"
+    version: null
+    version_rank: 1
+    family: ai-hub
+    is_current: true
+    lifecycle: current
+    topic_count: 660
+    newest_lastmod: "2026-08-06"
+  alpha-platform:
+    title: "Alpha Platform"
+    product: "Alpha Platform"
+    version: null
+    version_rank: 1
+    family: alpha-platform
+    is_current: true
+    lifecycle: current
+    topic_count: 68
+    newest_lastmod: "2026-03-04"
+  alpha-workflow-publication:
+    title: "Alpha Workflow"
+    product: "Alpha Workflow"
+    version: null
+    version_rank: 1
+    family: alpha-workflow
+    is_current: true
+    lifecycle: current
+    topic_count: 8
+    newest_lastmod: "2024-08-13"
+  neutrinos-art-api-reference-guide:
+    title: "ART API"
+    product: "ART API"
+    version: null
+    version_rank: 1
+    family: art-api
+    is_current: true
+    lifecycle: current
+    topic_count: 15
+    newest_lastmod: "2021-01-25"
+  best-practices:
+    title: "Best Practices"
+    product: "Best Practices"
+    version: null
+    version_rank: 1
+    family: best-practices
+    is_current: false
+    lifecycle: superseded
+    topic_count: 9
+    newest_lastmod: "2020-05-11"
+  best-practices-8:
+    title: "Best Practices 8"
+    product: "Best Practices"
+    version: 8
+    version_rank: 2
+    family: best-practices
+    is_current: true
+    lifecycle: current
+    topic_count: 9
+    newest_lastmod: "2021-09-20"
+  build-an-app-on-neutrinos-platform:
+    title: "Build An App On Platform"
+    product: "Build An App On Platform"
+    version: null
+    version_rank: 1
+    family: build-an-app-on-platform
+    is_current: true
+    lifecycle: current
+    topic_count: 6
+    newest_lastmod: "2021-02-12"
+  change-log:
+    title: "Change Log"
+    product: "Change Log"
+    version: null
+    version_rank: 1
+    family: change-log
+    is_current: false
+    lifecycle: superseded
+    topic_count: 46
+    newest_lastmod: "2023-11-06"
+  change-log-publication:
+    title: "Change Log"
+    product: "Change Log"
+    version: null
+    version_rank: 2
+    family: change-log
+    is_current: true
+    lifecycle: current
+    topic_count: 1
+    newest_lastmod: "2023-02-27"
+  service-designer-user-s-guide:
+    # REVIEW: grouped by measured overlap, not by name — confirm the rename.
+    #   evidence: client-services-designer-8/service-designer-user-s-guide J=0.757
+    #   evidence: client-services-designer-9/service-designer-user-s-guide J=0.757
+    title: "Service Designer"
+    product: "Client Services Designer"
+    version: null
+    version_rank: 1
+    family: client-services-designer
+    is_current: false
+    lifecycle: superseded
+    topic_count: 58
+    newest_lastmod: "2021-07-28"
+    review: true
+  client-services-designer-8:
+    # REVIEW: grouped by measured overlap, not by name — confirm the rename.
+    #   evidence: client-services-designer-8/client-services-designer-9 J=1.0
+    #   evidence: client-services-designer-8/service-designer-user-s-guide J=0.757
+    title: "Client Services Designer 8"
+    product: "Client Services Designer"
+    version: 8
+    version_rank: 2
+    family: client-services-designer
+    is_current: false
+    lifecycle: superseded
+    topic_count: 72
+    newest_lastmod: "2023-01-30"
+    review: true
+  client-services-designer-9:
+    # REVIEW: grouped by measured overlap, not by name — confirm the rename.
+    #   evidence: client-services-designer-8/client-services-designer-9 J=1.0
+    #   evidence: client-services-designer-9/service-designer-user-s-guide J=0.757
+    title: "Client Services Designer 9"
+    product: "Client Services Designer"
+    version: 9
+    version_rank: 3
+    family: client-services-designer
+    is_current: true
+    lifecycle: current
+    topic_count: 72
+    newest_lastmod: "2023-01-30"
+    review: true
+  components-guide:
+    title: "Components"
+    product: "Components"
+    version: null
+    version_rank: 1
+    family: components
+    is_current: false
+    lifecycle: superseded
+    topic_count: 98
+    newest_lastmod: "2019-07-23"
+  components-guide-for-release-6:
+    title: "Components 6"
+    product: "Components"
+    version: 6
+    version_rank: 2
+    family: components
+    is_current: false
+    lifecycle: superseded
+    topic_count: 110
+    newest_lastmod: "2021-04-09"
+  components-guide-7:
+    title: "Components 7"
+    product: "Components"
+    version: 7
+    version_rank: 3
+    family: components
+    is_current: false
+    lifecycle: superseded
+    topic_count: 99
+    newest_lastmod: "2023-09-04"
+  components-guide-8:
+    title: "Components 8"
+    product: "Components"
+    version: 8
+    version_rank: 4
+    family: components
+    is_current: true
+    lifecycle: current
+    topic_count: 99
+    newest_lastmod: "2021-12-03"
+  concepts-publication:
+    title: "Concepts"
+    product: "Concepts"
+    version: null
+    version_rank: 1
+    family: concepts
+    is_current: true
+    lifecycle: current
+    topic_count: 67
+    newest_lastmod: "2026-03-31"
+  console-quick-links:
+    title: "Console Quick Links"
+    product: "Console Quick Links"
+    version: null
+    version_rank: 1
+    family: console-quick-links
+    is_current: true
+    lifecycle: current
+    topic_count: 4
+    newest_lastmod: "2021-08-30"
+  create-a-simple-mobile-app:
+    title: "Create A Simple Mobile App"
+    product: "Create A Simple Mobile App"
+    version: null
+    version_rank: 1
+    family: create-a-simple-mobile-app
+    is_current: true
+    lifecycle: current
+    topic_count: 28
+    newest_lastmod: "2022-02-28"
+  create-a-widget-on-studio-7:
+    title: "Create A Widget On Studio 7"
+    product: "Create A Widget On Studio"
+    version: 7
+    version_rank: 1
+    family: create-a-widget-on-studio
+    is_current: false
+    lifecycle: superseded
+    topic_count: 13
+    newest_lastmod: "2021-06-07"
+  create-a-widget-on-studio-8:
+    title: "Create A Widget On Studio 8"
+    product: "Create A Widget On Studio"
+    version: 8
+    version_rank: 2
+    family: create-a-widget-on-studio
+    is_current: true
+    lifecycle: current
+    topic_count: 13
+    newest_lastmod: "2021-09-20"
+  data-fabric-publication:
+    title: "Data Fabric"
+    product: "Data Fabric"
+    version: null
+    version_rank: 1
+    family: data-fabric
+    is_current: true
+    lifecycle: current
+    topic_count: 13
+    newest_lastmod: "2025-11-04"
+  development-faqs:
+    title: "Development FAQs"
+    product: "Development FAQs"
+    version: null
+    version_rank: 1
+    family: development-faqs
+    is_current: true
+    lifecycle: current
+    topic_count: 2
+    newest_lastmod: "2020-05-12"
+  doc-archive-publication:
+    title: "Doc Archive"
+    product: "Doc Archive"
+    version: null
+    version_rank: 1
+    family: doc-archive
+    is_current: true
+    lifecycle: current
+    topic_count: 3
+    newest_lastmod: "2021-09-20"
+  flow-designer-guide:
+    title: "Flow Designer"
+    product: "Flow Designer"
+    version: null
+    version_rank: 1
+    family: flow-designer
+    is_current: true
+    lifecycle: current
+    topic_count: 74
+    newest_lastmod: "2021-12-03"
+  how-to-articles:
+    title: "How To Articles"
+    product: "How To Articles"
+    version: null
+    version_rank: 1
+    family: how-to-articles
+    is_current: false
+    lifecycle: superseded
+    topic_count: 18
+    newest_lastmod: "2021-07-20"
+  how-to-articles-8:
+    title: "How To Articles 8"
+    product: "How To Articles"
+    version: 8
+    version_rank: 2
+    family: how-to-articles
+    is_current: true
+    lifecycle: current
+    topic_count: 26
+    newest_lastmod: "2022-03-14"
+  hypha:
+    title: "Hypha"
+    product: "Hypha"
+    version: null
+    version_rank: 1
+    family: hypha
+    is_current: true
+    lifecycle: current
+    topic_count: 34
+    newest_lastmod: "2026-06-13"
+  identity-server-publication:
+    title: "Identity Server"
+    product: "Identity Server"
+    version: null
+    version_rank: 1
+    family: identity-server
+    is_current: true
+    lifecycle: current
+    topic_count: 2
+    newest_lastmod: "2026-03-31"
+  learning-paths:
+    title: "Learning Paths"
+    product: "Learning Paths"
+    version: null
+    version_rank: 1
+    family: learning-paths
+    is_current: true
+    lifecycle: current
+    topic_count: 1
+    newest_lastmod: "2020-05-27"
+  neutrinos-modelr-guide:
+    title: "Modelr"
+    product: "Modelr"
+    version: null
+    version_rank: 1
+    family: modelr
+    is_current: true
+    lifecycle: current
+    topic_count: 22
+    newest_lastmod: "2021-02-05"
+  project-plugins-builder-guide:
+    # REVIEW: grouped by measured overlap, not by name — confirm the rename.
+    #   evidence: plugins-builder-guide-8/project-plugins-builder-guide J=1.0
+    title: "Plugins Builder"
+    product: "Plugins Builder"
+    version: null
+    version_rank: 1
+    family: plugins-builder
+    is_current: false
+    lifecycle: superseded
+    topic_count: 20
+    newest_lastmod: "2021-08-13"
+    review: true
+  plugins-builder-guide-8:
+    # REVIEW: grouped by measured overlap, not by name — confirm the rename.
+    #   evidence: plugins-builder-guide-8/project-plugins-builder-guide J=1.0
+    title: "Plugins Builder 8"
+    product: "Plugins Builder"
+    version: 8
+    version_rank: 2
+    family: plugins-builder
+    is_current: true
+    lifecycle: current
+    topic_count: 20
+    newest_lastmod: "2021-09-20"
+    review: true
+  psd-tutorial-publication:
+    title: "PSD Tutorial"
+    product: "PSD Tutorial"
+    version: null
+    version_rank: 1
+    family: psd-tutorial
+    is_current: true
+    lifecycle: current
+    topic_count: 19
+    newest_lastmod: "2022-02-28"
+  pulse-publication:
+    title: "Pulse"
+    product: "Pulse"
+    version: null
+    version_rank: 1
+    family: pulse
+    is_current: true
+    lifecycle: current
+    topic_count: 154
+    newest_lastmod: "2026-08-20"
+  neutrinos-reels-publication:
+    title: "Reels"
+    product: "Reels"
+    version: null
+    version_rank: 1
+    family: reels
+    is_current: false
+    lifecycle: superseded
+    topic_count: 53
+    newest_lastmod: "2026-07-24"
+  reels-publication:
+    title: "Reels"
+    product: "Reels"
+    version: null
+    version_rank: 2
+    family: reels
+    is_current: true
+    lifecycle: current
+    topic_count: 32
+    newest_lastmod: "2024-01-23"
+  server-side-service-designer-publication:
+    # REVIEW: grouped by measured overlap, not by name — confirm the rename.
+    #   evidence: server-services-designer-8/server-side-service-designer-publication J=0.941
+    title: "Server Side Service Designer"
+    product: "Server Services Designer"
+    version: null
+    version_rank: 1
+    family: server-services-designer
+    is_current: false
+    lifecycle: superseded
+    topic_count: 112
+    newest_lastmod: "2021-07-28"
+    review: true
+  server-services-designer-8:
+    # REVIEW: grouped by measured overlap, not by name — confirm the rename.
+    #   evidence: server-services-designer-8/server-side-service-designer-publication J=0.941
+    title: "Server Services Designer 8"
+    product: "Server Services Designer"
+    version: 8
+    version_rank: 2
+    family: server-services-designer
+    is_current: false
+    lifecycle: superseded
+    topic_count: 119
+    newest_lastmod: "2023-08-21"
+    review: true
+  server-services-designer-9:
+    title: "Server Services Designer 9"
+    product: "Server Services Designer"
+    version: 9
+    version_rank: 3
+    family: server-services-designer
+    is_current: true
+    lifecycle: current
+    topic_count: 186
+    newest_lastmod: "2023-09-05"
+  srm-faqs-guide-publication:
+    title: "SRM FAQs"
+    product: "SRM FAQs"
+    version: null
+    version_rank: 1
+    family: srm-faqs
+    is_current: true
+    lifecycle: current
+    topic_count: 5
+    newest_lastmod: "2021-01-25"
+  srm-platform-user-guide:
+    title: "SRM Platform"
+    product: "SRM Platform"
+    version: null
+    version_rank: 1
+    family: srm-platform
+    is_current: true
+    lifecycle: current
+    topic_count: 47
+    newest_lastmod: "2021-06-10"
+  app-builder-s-user-guide:
+    # REVIEW: grouped by measured overlap, not by name — confirm the rename.
+    #   evidence: app-builder-s-user-guide/studio-guide-7 J=0.991
+    title: "App Builder"
+    product: "Studio"
+    version: null
+    version_rank: 1
+    family: studio
+    is_current: false
+    lifecycle: superseded
+    topic_count: 117
+    newest_lastmod: "2021-07-27"
+    review: true
+  studio-guide-7:
+    # REVIEW: grouped by measured overlap, not by name — confirm the rename.
+    #   evidence: app-builder-s-user-guide/studio-guide-7 J=0.991
+    title: "Studio 7"
+    product: "Studio"
+    version: 7
+    version_rank: 2
+    family: studio
+    is_current: false
+    lifecycle: superseded
+    topic_count: 116
+    newest_lastmod: "2021-07-27"
+    review: true
+  studio-guide-8:
+    # REVIEW: grouped by measured overlap, not by name — confirm the rename.
+    #   evidence: studio-guide-8/studio-guide-9 J=0.92
+    title: "Studio 8"
+    product: "Studio"
+    version: 8
+    version_rank: 3
+    family: studio
+    is_current: false
+    lifecycle: superseded
+    topic_count: 117
+    newest_lastmod: "2023-03-01"
+    review: true
+  studio-guide-9:
+    # REVIEW: grouped by measured overlap, not by name — confirm the rename.
+    #   evidence: studio-guide-8/studio-guide-9 J=0.92
+    title: "Studio 9"
+    product: "Studio"
+    version: 9
+    version_rank: 4
+    family: studio
+    is_current: true
+    lifecycle: current
+    topic_count: 123
+    newest_lastmod: "2023-11-06"
+    review: true
+  neutrinos-studio-migration-guide:
+    title: "Studio Migration"
+    product: "Studio Migration"
+    version: null
+    version_rank: 1
+    family: studio-migration
+    is_current: true
+    lifecycle: current
+    topic_count: 18
+    newest_lastmod: "2022-12-25"
+  training-publication:
+    title: "Training"
+    product: "Training"
+    version: null
+    version_rank: 1
+    family: training
+    is_current: true
+    lifecycle: current
+    topic_count: 1
+    newest_lastmod: "2021-09-07"
+  trinity-publication:
+    title: "Trinity"
+    product: "Trinity"
+    version: null
+    version_rank: 1
+    family: trinity
+    is_current: true
+    lifecycle: current
+    topic_count: 45
+    newest_lastmod: "2025-08-29"
+  tutorial-create-a-leave-management-system:
+    title: "Tutorial Create A Leave Management System"
+    product: "Tutorial Create A Leave Management System"
+    version: null
+    version_rank: 1
+    family: tutorial-create-a-leave-management-system
+    is_current: true
+    lifecycle: current
+    topic_count: 21
+    newest_lastmod: "2020-05-26"
+  tutorial-create-a-pwa:
+    title: "Tutorial Create A PWA"
+    product: "Tutorial Create A PWA"
+    version: null
+    version_rank: 1
+    family: tutorial-create-a-pwa
+    is_current: true
+    lifecycle: current
+    topic_count: 20
+    newest_lastmod: "2021-09-21"
+  tutorial-create-your-first-app:
+    title: "Tutorial Create Your First App"
+    product: "Tutorial Create Your First App"
+    version: null
+    version_rank: 1
+    family: tutorial-create-your-first-app
+    is_current: true
+    lifecycle: current
+    topic_count: 14
+    newest_lastmod: "2022-02-28"
+  tutorial-integrate-your-app-with-apis:
+    title: "Tutorial Integrate Your App With Apis"
+    product: "Tutorial Integrate Your App With Apis"
+    version: null
+    version_rank: 1
+    family: tutorial-integrate-your-app-with-apis
+    is_current: true
+    lifecycle: current
+    topic_count: 8
+    newest_lastmod: "2020-05-26"

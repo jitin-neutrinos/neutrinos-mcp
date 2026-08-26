@@ -1,0 +1,46 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "neutrinos-mcp"
+version = "2.0.0"
+description = "Retrieval MCP server over the Neutrinos documentation corpus (plan §4.4)"
+requires-python = ">=3.11"
+dependencies = [
+  "fastmcp>=3.4,<4",          # MCP 2026-07-28 support (§8.4)
+  "sqlite-vec==0.1.9",        # PINNED: pre-v1, breaking changes expected (R5)
+  "httpx>=0.27",              # crawl, HTTP/2, connection pooling
+  "lxml>=5.2",                # DOM walk for extraction (§6.2)
+  "fastembed>=0.8",           # ONNX embeddings + rerank, torch-free
+  "onnxruntime>=1.18",        # explicit: models fastembed does not ship
+  "tokenizers>=0.20",         # token counting for chunk budgets
+  "numpy>=1.26",              # MMR, SimHash, vector maths
+  "pyyaml>=6.0",              # publications.yaml
+  "jsonschema>=4.22",         # §8.5 output validation
+  "opentelemetry-sdk>=1.25",  # §11
+]
+
+[project.optional-dependencies]
+dev    = ["pytest>=8.2", "pytest-cov", "ruff", "mypy", "referencing"]
+eval   = ["ragas", "pandas"]         # eval-only; never imported by the server
+chroma = ["chromadb>=0.5"]           # R5 escape hatch (AD-02); optional at runtime
+
+[project.scripts]
+neutrinos-mcp   = "neutrinos_mcp.server:main"
+neutrinos-build = "neutrinos_mcp.ingest.index:main"
+neutrinos-cli   = "neutrinos_mcp.cli:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/neutrinos_mcp"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.mypy]
+python_version = "3.11"
+ignore_missing_imports = true

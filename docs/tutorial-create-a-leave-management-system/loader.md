@@ -1,0 +1,109 @@
+# Loader
+
+<https://documentation.neutrinos.com/articles/#!tutorial-create-a-leave-management-system/loader>
+
+The **Loader** page is part of the neutrinos login template that was used to create the app. It is a **default** page.
+
+It contains a spinner component and displays the information about what is happening while the user waits after entering his or her credentials and clicking **Login**.
+
+**Page Implementation:**
+
+**Copy CodeJavaScript/*DEFAULT GENERATED TEMPLATE. DO NOT CHANGE SELECTOR TEMPLATE_URL AND CLASS NAME*/
+import { Component, OnInit, Inject } from '@angular/core'
+import { ModelMethods } from '../../lib/model.methods';
+import { NDataModelService } from 'neutrinos-seed-services';
+import { NBaseComponent } from '../../../../../app/baseClasses/nBase.component';
+import { MatDialog, MAT_DIALOG_DATA } from '@angular/material';
+/**
+ * Service import Example :
+ * import { HeroService } from '../services/hero/hero.service';
+ */
+@Component({
+ selector: 'bh-loader',
+ templateUrl: './loader.template.html',
+})
+export class loaderComponent extends NBaseComponent implements OnInit {
+ mm: ModelMethods;
+ mode = "indeterminate";
+ constructor(private bdms: NDataModelService,
+ @Inject(MAT_DIALOG_DATA) public data) {
+ super();
+ this.mm = new ModelMethods(bdms);
+ }
+ ngOnInit() {
+ }
+ get(dataModelName, filter?, keys?, sort?, pagenumber?, pagesize?) {
+ this.mm.get(dataModelName, filter, keys, sort, pagenumber, pagesize,
+ result => {
+ // On Success code here
+ },
+ error => {
+ // Handle errors here
+ });
+ }
+ getById(dataModelName, dataModelId) {
+ this.mm.getById(dataModelName, dataModelId,
+ result => {
+ // On Success code here
+ },
+ error => {
+ // Handle errors here
+ })
+ }
+ put(dataModelName, dataModelObject) {
+ this.mm.put(dataModelName, dataModelObject,
+ result => {
+ // On Success code here
+ }, error => {
+ // Handle errors here
+ })
+ }
+ validatePut(formObj, dataModelName, dataModelObject) {
+ this.mm.validatePut(formObj, dataModelName, dataModelObject,
+ result => {
+ // On Success code here
+ }, error => {
+ // Handle errors here
+ })
+ }
+ update(dataModelName, update, filter, options) {
+ const updateObject = {
+ update: update,
+ filter: filter,
+ options: options
+ };
+ this.mm.update(dataModelName, updateObject,
+ result => {
+ // On Success code here
+ }, error => {
+ // Handle errors here
+ })
+ }
+ delete(dataModelName, filter) {
+ this.mm.delete(dataModelName, filter,
+ result => {
+ // On Success code here
+ }, error => {
+ // Handle errors here
+ })
+ }
+ deleteById(dataModelName, dataModelId) {
+ this.mm.deleteById(dataModelName, dataModelId,
+ result => {
+ // On Success code here
+ }, error => {
+ // Handle errors here
+ })
+ }
+ updateById(dataModelName, dataModelId, dataModelObj) {
+ this.mm.updateById(dataModelName, dataModelId, dataModelObj,
+ result => {
+ // On Success code here
+ }, error => {
+ // Handle errors here
+ })
+ }
+}
+**
+
+**The view of the Loader page on runtime:**

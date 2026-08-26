@@ -1,0 +1,26 @@
+# Neutrinos Platform Best Practices
+
+<https://documentation.neutrinos.com/articles/#!best-practices/neutrinos-platform-best-practices>
+
+# Neutrinos Platform Best Practices
+
+---
+
+Follow these best practices and conventions while developing your apps using Neutrinos Platform:
+
+### App Creation
+
+![Platform](/resources/Storage/best-practices/platform.png)
+
+- While creating an app, make sure you provide a preview image and the app description. This helps identify your app easily on Neutrinos Console.
+- Use the existing templates, and plugins from Neutrinos Store while creating your app. This saves app development time. For example,
+  - If you require user validation for the app, use the **Neutrinos-login-template**.
+  - If you have a requirement of displaying the data in excel sheets into HTML pages, use the **Excel Viewer **widget.
+- Use the** Plugins** option to download already existing app plugins to your workspace rather than your app. Plugins downloaded on the workspace can be applied to any app.
+
+Naming ConventionsUse meaningful names within your apps. Stay away from using shortcuts, abbreviations, and acronyms. Also, use consistent naming conventions. For example, use **Leave Management System** as your app name instead of **LMS** as LMS also stands for Learning Management System.Use PascalCase.
+Suffix foreign keys with "**Id"** for easy recognition. For example, **CustomerId**.Coding ConventionsAvoid empty labels and descriptions.Comment unclear or complex logic.Use Web Blocks for JavaScript encapsulation and reusability.Minify JavaScript and CSS whenever possible.Avoid duplicate CSS styles.Avoid writing custom HTML using unescaped expressions.Use cross-browser JavaScript. Example - JQuery.Remove unused or duplicate code. Design ConventionsUse Angular Flex for layouts rather than pure CSS.If you are using a Cordova plugin that changes the UI, make sure to use the ngZone command to bring the execution back to the Angular's zone after the Cordova plugin has executed its function.
+Database and QueriesCreate indexes for queries that will be used regularly.Avoid select * queries until it is really needed. Use select [required_columns_list] for better performance.Use constraints (foreign key, not null, etc.) for data integrity. Don’t give whole control to application code.Use normalization to optimize performance.When working with an external database, make any database design-related changes at the external database and re-import the database.
+Use Aggregates. They’re optimized and database independent!Avoid type casts in AggregatesUse comments and inline comments in your SQL statementsMinimize the number of queries you need to execute.Avoid using indexes when iterating a query output.Collaboration and Conflict PreventionKnow the recommended project team for your project.Make sure that everyone in the team uses the same version of Neutrinos Studio.Avoid working on the same elements at the same time. Ideally, each developer should be working on separate pages within the app. In case of overlap, ensure that they are not working on the same element in the shared page.  Before starting always **Pull** the latest updated from GitHub, resolve conflicts if any, and then start working.Keep pushing changes to GitHub frequently, with proper versioning and comments for easy tracking and reverts, if needed.Define what “done” means and include testing.Managing Plugins and DependenciesAlways add and manage **npm** and **Angular** dependencies to your app by using the plugin manager. This ensures that your dependencies are properly handled when you migrate your app.App DeploymentAlways initialize your app before deploying.Create custom tasks from the task pane to execute the commonly used tasks such as performing pod install
+Instead of deploying your app directly, choose to **Live Preview **your app, validate the look and feel of your app, and then deploy your app. If you are building a mobile app, you can remove the fingerprint plugin from the **config.xml** file before you initialize the app as it has a dependency on swift versions and your Xcode may throw errors regarding the swift versions. This happens if your Xcode version is not compatible with the correct swift version required for the plugin.MiscellaneousMake any platform-specific preference changes within the **config.xml** of your project rather than within the platform-specific files. This helps in easy maintenance and source control.
+Use the TypeScript editor to manually add your code. Using other editors such as VSCode while editing in Neutrinos Studio could cause problems such as missing code. Also, migration to newer versions may not handle cases where you have edited files that can't be accessed from Neutrinos Studio.Try and stay up to date with studio releases for the latest features and bug fixes and make sure you follow manual migration steps wherever necessary.Consider creating your own components that are reusable to save app development time. You can upload these components to the Neutrinos Store (the marketplace of Neutrinos) and reuse them instead of using custom HTML that is not reusable. Neutrinos Store can host components, angular packages, and B-Modelr nodes which contain their own external dependencies.

@@ -1,0 +1,89 @@
+# Types of Nodes
+
+<https://documentation.neutrinos.com/articles/#!neutrinos-reels-publication/nodes>
+
+Nodes are the fundamental building blocks of a workflow in Pulse. A node represents a step, gateway, or control point within a process. Each node specifies the action that occurs at that point in the workflow (for example, start, human task, service call, decision, or end). Nodes are connected by sequence flows (also called arcs or edges), which define the execution path from one node to another.
+
+## Types of Nodes
+
+Commonly used node types include:
+
+1. **Start Node**: Marks the entry point of the process.
+2. **End Node**: Marks the termination point of the process.
+3. **Gateway Node**: These nodes are often referred to as decision, join, or split nodes. They control the branching and merging of process flows. Examples include Exclusive, Inclusive, and Parallel nodes.
+4. **Extra Event Node**: Extra Event Nodes are used to handle event-driven, time-based, and automated actions within a workflow, including signal handling, timer-based execution, agent-driven automation, and business logic processing.
+5. **Subprocess Node**: Subprocess Nodes are used to group and manage related activities within a workflow. Depending on the use case, subprocesses can be configured as Reusable, Embedded, Multi-Instance, or Event subprocesses to support process modularity, reusability, repeated execution, and event-driven handling.
+6. **Container Node**: A Container is a top-level participant container in a BPM diagram used to define process boundaries and model interactions between different participants. It improves clarity, modularity, and communication in process modeling. Example Pool node.
+
+## Start Nodes
+
+The start nodes mark an entry point in the process. They can be of the following types:
+
+| **Node Name** | **Icon** | **Description** |
+| --- | --- | --- |
+| Start | ![nodes-start](/resources/Storage/neutrinos-reels-publication/images/nodes-start.png) | Start of the process. |
+| Timer Start | ![nodes-timer-start](/resources/Storage/neutrinos-reels-publication/images/nodes-timer-start.png) | Specifies the start of a timer used to track the duration or timing of a specific process, flow, or task. |
+| Start Message | ![nodes-start-message](/resources/Storage/neutrinos-reels-publication/images/nodes-start-message.png) | Specifies the initiation of a message within a specific process, flow, or task. |
+
+## End Nodes
+
+The end nodes mark the termination point in the process. They can be of the following types:
+
+| **Node Name** | **Icon** | **Description** |
+| --- | --- | --- |
+| End | ![nodes-end](/resources/Storage/neutrinos-reels-publication/images/nodes-end.png) | End of the process. |
+| End Timer | ![nodes-end-timer](/resources/Storage/neutrinos-reels-publication/images/nodes-end-timer.png) | Specifies the end of a timer that was initiated by a timer start node within a process, flow, or task. |
+| End Signal | ![nodes-end-signal](/resources/Storage/neutrinos-reels-publication/images/nodes-end-signal.png) | Specifies the end of a message that was initiated by a start message node within a process, flow, or task. |
+
+## Tasks
+
+This section of the documentation outlines different types of task nodes that are available:
+
+| **Node Name  ** | **  Icon  ** | **  Description** |
+| --- | --- | --- |
+| User Tasks | ![pulse-user-tasks-node-icon](/resources/Storage/neutrinos-reels-publication/images/pulse-user-tasks-node-icon.png) | A user task node defines a step in the workflow that must be performed by a user rather than being executed automatically by the system. These tasks are typically assigned to specific users or groups and appear in their task queues or worklists for action.      Key Characteristics    **Human Interaction**: Execution depends on user input or decision-making.    **Task Assignments**: Task Assignment: Tasks can be assigned to individual users or groups.    **Form-Based Input**: User tasks are often associated with forms that capture input required to proceed in the workflow.    **State Management**: A user task transitions through states such as *Created*, *Assigned*, *In Progress*, and *Completed*.    **Deadlines and SLAs**: User tasks can be configured with SLA constraints, including due dates, escalation rules, and reminders. |
+| Script Node | ![pulse-user-script-node-icon](/resources/Storage/neutrinos-reels-publication/images/pulse-user-script-node-icon.png) | A script node executes predefined scripts or expressions as part of the process flow. It enables data manipulation, conditional logic, and intermediate processing steps that support decision-making or prepare data for subsequent nodes.    Key Characteristics     **Automated Execution**: Executes automatically when the process reaches the node.    **No User Interaction**: Does not require manual input or intervention.    **Inline Logic Handling**: Allows embedding business logic directly within the process.    **Lightweight Processing**: Typically used for simple to moderate transformations or calculations |
+
+## Gateway Nodes
+
+This section of the documentation outlines the different types of gateway nodes that are available:
+
+| **Node Name  ** | **  Icon  ** | **  Description** |
+| --- | --- | --- |
+| Parallel | ![nodes-gateways-parallel](/resources/Storage/neutrinos-reels-publication/images/nodes-gateways-parallel.png) | A parallel node (also known as a Parallel gateway) is used in a process workflow to enable multiple execution paths to run simultaneously.        When a process flow reaches a parallel node:     **Split behavior**: The flow is divided into two or more parallel branches, and all branches are triggered at the same time. Each branch proceeds independently without waiting for the others to complete.     **Join behavior**: A parallel node can also be used to synchronize branches. In this case, the process waits until all parallel paths have been completed before continuing to the next step.      This allows tasks to be executed concurrently, improving efficiency when multiple actions are independent. |
+| Exclusive | ![nodes-gateways-exclusive](/resources/Storage/neutrinos-reels-publication/images/nodes-gateways-exclusive.png) | An exclusive node (also known as an exclusive gateway) is used in a process workflow to define a decision point where only one path can be followed.     **Decision behavior**: When the process reaches an exclusive node, it evaluates the defined conditions on each outgoing path.     **Path selection**: Only the first condition that evaluates to true is executed. All other paths are ignored.     **Default path**: If no conditions are met, a default path (if defined) is followed to ensure the process continues.      This ensures that at a decision point, the workflow follows a single, mutually exclusive path, based on the business rules or conditions applied. |
+| Inclusive | ![nodes-gateways-inclusive](/resources/Storage/neutrinos-reels-publication/images/nodes-gateways-inclusive.png) | An inclusive node (also referred to as an inclusive gateway) is used in a process workflow to model decisions where one or more paths may be taken based on the defined conditions.     **Decision behavior**: When the process flow reaches an inclusive node, it evaluates the conditions for each outgoing path.     **Path selection**: All paths with conditions that evaluate to true are executed. This means multiple branches can run in parallel, depending on the outcome of the evaluation.     **Join behavior**: When used as a joining node, the process waits for all active branches that were triggered by the split to complete before moving forward.      This provides flexibility by allowing workflows to follow multiple valid paths simultaneously, unlike the exclusive gateway (which selects only one path) and the parallel gateway (which always triggers all paths). |
+| Event based | ![nodes-gateways-event-based](/resources/Storage/neutrinos-reels-publication/images/nodes-gateways-event-based.png) | An event-based node (also known as an event-based gateway) is used in a process workflow to define a decision point that depends on the occurrence of events, rather than conditions on data.     **Trigger behavior**: When the process reaches an event-based node, the workflow pauses and waits for one of the configured events to occur.     **Path selection**: The path corresponding to the first event that occurs is followed. All other event paths are ignored once a single event has been triggered.     **Use case**: This type of gateway is useful when the next step in the process is determined by an external signal, message, or timer, rather than internal business rules.      This allows processes to react dynamically to external inputs, ensuring that the workflow continues only when a relevant event takes place. |
+
+## Extra Events
+
+This section describes the different types of extra event nodes available in the platform.
+
+| **Node Name  ** | **  Icon  ** | **  Description** |
+| --- | --- | --- |
+| Signal Intermediate Catch | ![extra-events-signal-intermediate-catch-icon](/resources/Storage/neutrinos-reels-publication/images/extra-events-signal-intermediate-catch-icon.png) | A Signal Intermediate Catch Event is an intermediate event that pauses process execution and waits for a specified signal. Once the signal is received, the process resumes execution. Signals are broadcast events that can be received by multiple process instances simultaneously. This event is typically used when:       A process must wait for a broadcast signal      The signal can come from anywhere (another process, system, or external event)      Multiple processes can listen to the same signal simultaneously      Loose coupling is needed      Async communication required |
+| Signal Intermediate Throw | ![extra-events-signal-intermediate-throw-icon](/resources/Storage/neutrinos-reels-publication/images/extra-events-signal-intermediate-throw-icon.png) | A Signal Intermediate Throw Event is an intermediate event that broadcasts a named signal to all subscribed or listening process instances. Once the signal is emitted, the process continues execution without waiting for any response. This event is typically used when:       Broadcasting events across multiple processes      A decoupled architecture is required      Event-driven workflow is implemented      Multiple subscribers exist |
+| Timer Intermediate | ![extra-events-timer-intermediate-icon](/resources/Storage/neutrinos-reels-publication/images/extra-events-timer-intermediate-icon.png) | A Timer Intermediate Event is an intermediate event that pauses process execution until a defined time duration, date, or recurring schedule is reached. Once the timer condition is satisfied, the process resumes execution automatically. A Timer Intermediate Event can be configured in three ways:       Duration-Based Timer: Wait for a specific duration      Date-Based Timer: Waits until a specific date and time       This event is typically used when:       Waiting for a duration      SLA tracking      Reminder notifications      Scheduled processing      Escalation handling |
+| Agent Node | ![extra-events-signal-agent-node](/resources/Storage/neutrinos-reels-publication/images/extra-events-signal-agent-node.png) | An Agent Node is a process element that executes automated tasks through a configured agent, such as a system service, bot, or AI component. The Agent Node performs the defined action and passes control to the next step in the workflow upon completion. This event is typically used when:     Automating system tasks    AI-driven decisions    External API execution    Data processing automation    Background processing |
+| Business Node | ![extra-events-signal-business-node](/resources/Storage/neutrinos-reels-publication/images/extra-events-signal-business-node.png) | A Business Node in a process automation platform executes business logic, rules, or domain-specific operations within a workflow. Once the configured business logic is executed, the process automatically proceeds to the next step. Common use cases include:     Business Rule Execution    Data Transformation    Business Calculation     This event is typically used when:     Applying business rules    Performing calculations    Validating data    Data transformation    Business logic execution     **Note**: A **Business Node** is used for executing business rules and logic, whereas an **Agent Node** is used for executing automated tasks through agents, services, or AI-driven components. |
+
+## Subprocess Nodes
+
+This section describes the different types of Sub Process nodes available in the platform.
+
+| **Node Name  ** | **  Icon  ** | **  Despcription** |
+| --- | --- | --- |
+| Reusable Subprocess | ![pulse-subprocess-reusable-node-icon](/resources/Storage/neutrinos-reels-publication/images/pulse-subprocess-reusable-node-icon.png) | A **Reusable Subprocess** is a subprocess that is defined independently and can be reused across multiple workflows or processes within a process automation platform. When configured with the Subprocess type, it is invoked as a callable process component within a parent workflow.      Working:      **Parent process** reaches **Reusable Subprocess** node      Platform invokes the configured **subprocess**     Subprocess executes defined steps      Subprocess completes execution      Control returns to the **parent process**     Parent process continues execution       This type of node is typically used when:       Logic is reused across multiple workflows      Complex processes need modularisation      Centralized maintenance required      Standardized process steps required |
+| Embedded Subprocess | ![pulse-subprocess-embedded-node-icon](/resources/Storage/neutrinos-reels-publication/images/pulse-subprocess-embedded-node-icon.png) | An Embedded Subprocess is a subprocess defined within a parent process that is used to group a set of related activities into a logical, reusable section within the same workflow. Unlike reusable subprocesses, an embedded subprocess cannot be reused outside the parent process.      **Working**:       Parent process reaches Embedded Subprocess      Subprocess expands and executes internal steps      Steps inside subprocess execute sequentially or based on flow logic      Subprocess completes      Control returns to parent process       This type of node is typically used when:       Grouping related tasks      Simplifying complex workflows      Scoped execution required      Process readability improvement |
+| Multi Instance Subprocess | ![pulse-subprocess-multi-instance-node-icon](/resources/Storage/neutrinos-reels-publication/images/pulse-subprocess-multi-instance-node-icon.png) | A Multi-Instance Subprocess is configured to execute multiple instances of the same workflow based on a defined collection or loop condition. Each instance executes independently, and the parent process continues once all instances are completed, based on the configured completion condition. Types of Multi Instance Process include:       Parallel Multi-Instance      Sequential Multi-Instance       **Working**:       Process reaches Multi-Instance Subprocess      Platform reads collection or loop condition      System creates multiple subprocess instances      Each instance executes      Once completion condition is met      Parent process continues execution       This type of node is typically used when:       Multiple approvals required      Batch processing needed      Loop-based execution      Parallel task execution      Repeating same workflow |
+| Event Subprocess | ![pulse-subprocess-event-node-icon](/resources/Storage/neutrinos-reels-publication/images/pulse-subprocess-event-node-icon.png) | An Event Subprocess is a subprocess that is triggered by a specific event during the execution of a parent process. Unlike other subprocess types, an Event Subprocess does not follow the normal process flow and is executed only when the configured event occurs.    Event Subprocesses are commonly used for handling exceptions, interruptions, escalations, or event-driven logic within a process.    **Working**:     Parent process starts execution    Event Subprocess remains inactive but listening    Configured event occurs (timer, message, signal, etc.)    Event Subprocess is triggered    Event Subprocess executes defined steps    Depending on configuration:    Interrupts parent process, or    Runs in parallel       Supported Event Triggers:     Timer Event    Signal Event     This type of node is typically used in:     Exception handling required    Timeout handling required    Escalation logic required    Event-driven execution needed    Interrupt logic required |
+
+## Container Node
+
+| **Node Name  ** | **  Icon  ** | **  Description** |
+| --- | --- | --- |
+| Pool | ![pulse-container-node-pool-icon](/resources/Storage/neutrinos-reels-publication/images/pulse-container-node-pool-icon.png) | A Pool Container represents a participant in a business process within a Process Management tool. It serves as a top-level container encapsulating an entire process for a specific organization, system, or role. A Pool Container is a graphical container used to model and organize process flows for a specific participant. Each pool typically represents a separate entity, such as:       An organization      A department      A system      An external partner      A user role       **Purpose**:      Pool containers are primarily used to:       Define process boundaries      Represent different participants in a process      Model interactions between participants      Improve process clarity and readability      Support message-based communication between different entities |
+
+[Next Topic](/articles/neutrinos-reels-publication/flow-lines)
+
+[Previous Topic](/articles/neutrinos-reels-publication/fundamentals)

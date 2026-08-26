@@ -1,0 +1,90 @@
+# Neutrinos Documentation Retrieval MCP — runtime settings
+# Every model is pinned by revision, not by name (AD-12 / R10).
+
+[paths]
+db              = "data/neutrinos.db"
+db_build        = "data/neutrinos.db.new"
+db_prev         = "data/neutrinos.db.prev"
+raw             = "raw"
+census          = "data/census.json"
+publications    = "config/publications.yaml"
+chroma          = "data/chroma_db"
+
+[source]
+sitemap_index   = "https://documentation.neutrinos.com/sitemaps/sitemap.xml"
+article_url     = "https://documentation.neutrinos.com/article/{pub}/{slug}"
+reader_url      = "https://documentation.neutrinos.com/articles/#!{pub}/{slug}"
+anchor_url      = "https://documentation.neutrinos.com/articles/{pub}/{slug}/a/{anchor}"
+user_agent      = "neutrinos-mcp-indexer/2.0 (+internal docs indexer; contact: jitin.nair@neutrinos.com)"
+concurrency     = 8
+timeout_s       = 30
+retries         = 3
+
+[chunking]
+chunker_version = "2.0"
+target_min      = 200
+target_max      = 600
+merge_below     = 120
+overlap_ratio   = 0.15
+hard_max        = 900
+
+[embedding]
+# MEASURED on this machine (12 cores, no VNNI), 2026-08-26 — see §14 Q5.
+#   bge-small-en-v1.5  -> qdrant/...-onnx-q (INT8):  1.1 chunks/s, 117ms/query
+#   bge-small-en       -> Qdrant/... (FP32)       :  7.0 chunks/s,  69ms/query  <-- chosen
+#   all-MiniLM-L6-v2   -> qdrant/... (FP32)       : 36.9 chunks/s, 145ms/query
+# The INT8 build is 6.6x SLOWER than the same-size FP32 one on long sequences
+# (no VNNI on this CPU), which inverts AD-09's assumption. Query latency is the
+# binding constraint and FP32 bge-small-en wins it outright.
+model           = "BAAI/bge-small-en"
+dim             = 384
+query_prefix    = "Represent this sentence for searching relevant passages: "
+batch_size      = 32
+threads         = 12
+
+[reranker]
+# AD-09 originally specified `BAAI/bge-reranker-v2-m3` as primary. CONFIRMED
+# 2026-08-26: fastembed's TextCrossEncoder does not support that model
+# (`list_supported_models()` does not include it) — `preferred` was failing on
+# every load and falling back to `model` silently, exactly the failure mode
+# AD-09's fallback ladder was meant to make visible, not absorb quietly.
+# `preferred` is left unset until a supported upgrade (`bge-reranker-base` at
+# 1.04GB, or `ms-marco-MiniLM-L-12-v2` at 1.5x this model's size) is measured
+# against the p95 budget — see §14. `model` is the only reranker in the loop.
+model           = "Xenova/ms-marco-MiniLM-L-6-v2"
+max_pairs       = 40
+enabled         = true
+# MEASURED 2026-08-26 on this machine (12 cores, no VNNI), 40 pairs:
+#   full length 62ms/pair -> 2.5s per query, against a p95 budget of 1200ms.
+# Clipping the passage tail is the cheapest recoverable lever; see §10.4 for
+# the measured recall cost of each setting.
+max_chars       = 800
+batch_size      = 64
+# threads: leave unset. An explicit count oversubscribes against OMP_NUM_THREADS
+# and measured 89ms/pair at 4 threads vs 62ms letting ONNX size its own pool.
+
+[vector_store]
+# AD-02: sqlite-vec keeps the single-artifact property.
+# "chroma" is a fully-wired alternate (R5 escape hatch).
+backend         = "sqlite-vec"     # "sqlite-vec" | "chroma"
+
+[retrieval]
+bm25_candidates = 50
+dense_candidates= 50
+rrf_k           = 60
+rerank_input    = 40
+mmr_lambda      = 0.7
+default_top_k   = 6
+max_top_k       = 20
+low_confidence  = 0.35
+simhash_hamming = 8
+
+[budgets]
+default_tokens  = 8000
+hard_max_tokens = 25000
+fetch_default   = 4000
+fetch_max       = 12000
+
+[staleness]
+fresh_months    = 12
+aging_months    = 36

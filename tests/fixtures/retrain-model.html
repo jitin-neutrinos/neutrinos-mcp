@@ -1,0 +1,154 @@
+<!DOCTYPE html><html lang="en-US" dir="ltr"><head><style type="text/css">.ArticleViewer_searchKeywords{background-color: yellow !important;}</style>
+<script type="text/javascript">//<!--
+var articlesServiceUrl='/article/';
+//--></script>
+<link rel="canonical" href="/articles/ai-hub/retrain-model"/>
+<title>Retrain Model</title><script type="text/javascript">//<!--
+var imgPopupTexts={openInNewWindowText: 'Open in new window', closeText: 'Close'};var articleTitleText='Retrain Model';
+//--></script><link rel="stylesheet" type="text/css" href="/resources/Styles/ai-hub/Style.css"/><link rel="stylesheet" type="text/css" href="/style-bundles/article-published.css?v=1.0.9699.18157"/><script src="/resources/Scripts/ai-hub/Script.js" type="text/javascript"></script><script src="/script-bundles/article-published.js?v=1.0.9699.18157" type="text/javascript"></script><meta charset="utf-8"><meta http-equiv="Content-Type" content="text/html;charset=utf-8"></head><body><span id="__clhTop"></span>
+  <span class="headerBreadcumb CHBreadcrumb"><span class="CHBreadcrumb_item CHBreadcrumb_itemSelf">Retrain Model</span></span>
+  <div class="sidebar">
+    <p>
+  &nbsp;
+</p>
+<p>
+  
+</p>
+  </div>
+<p>
+  Retraining a model is the process of reinforcing or improving its learning. Retraining may be required due to changes in the format of the input data to be predicted or extracted. It may also be performed to enhance the model's accuracy, precision, and confidence scores. Regardless of the model type—whether it's a prediction model or an extraction model—the overall steps involved in retraining remain largely the same, as outlined in this topic.
+</p>
+<p>
+  For illustration purpose, we have used extraction model to illustrate the process of retraining. Follow the steps below to retrain the model:</p>
+<ol>
+  <li>
+    From the left navigation panel, select either the Prediction or Extraction model option based on your requirement. In this example, we have chosen to retrain an Extraction type model.
+    <br/>
+    <br/>
+    <img src="/resources/Storage/ai-hub/images/ai-hub-extraction-retrain-start-page.png" alt="ai-hub-extraction-retrain-start-page" class="imggif" loading="lazy"/>
+    <br/>
+  </li>
+  <li>
+    On the Models page—whether Extraction or Prediction—select the model that you want to retrain.
+    <br/>
+    <br/>
+    <img src="/resources/Storage/ai-hub/images/ai-hub-extraction-retrain-select-model.png" alt="ai-hub-extraction-retrain-select-model" class="imggif" loading="lazy"/>
+    <br/>
+  </li>
+  <li>
+    On the Versions page, click the Retrain button located at the top-right corner of the screen.
+    <br/>
+    <br/>
+    <img src="/resources/Storage/ai-hub/images/ai-hub-extraction-retrain-retrain-button.png" alt="ai-hub-extraction-retrain-retrain-button" class="imggif" loading="lazy"/>
+    <br/>
+  </li>
+  <li>
+    After clicking the Retrain button, a prompt appears to select the model version you wish to retrain. You can either select an existing version from the dropdown list or choose to train a fresh model from scratch.
+    <br/>
+    <br/>
+    Training a fresh model follows the same steps as creating a new model. For more information on model creation, refer to the <a href="/articles/ai-hub/prediction" onclick="return n(&#39;!ai-hub/prediction&#39;,this);">Prediction</a>&nbsp;or <a href="/articles/ai-hub/extraction" onclick="return n(&#39;!ai-hub/extraction&#39;,this);">Extraction</a> topics, depending on your requirements.
+    <br/>
+    <br/>
+    For training an existing model, choose the version from the dropdown, and click Next at the bottom of the screen.
+    <br/>
+    <br/>
+    <img src="/resources/Storage/ai-hub/images/ai-hub-extraction-retrain-select-version-next.png" alt="ai-hub-extraction-retrain-select-version-next" class="imggif" loading="lazy"/>
+    <br/>
+    <br/>
+    Additionally, you can configure settings under the Advanced Configurations section for the new version being retrained. Click the gear icon on the top of the page to configure Advanced Configuration as illustrated in the image below:
+    <br/>
+    <br/>
+    <img src="/resources/Storage/ai-hub/images/ai-hub-extraction-retrain-adv-congif-choose.png" alt="ai-hub-extraction-retrain-adv-congif-choose" class="imggif" loading="lazy"/>
+    <br/>
+  </li>
+  <li>
+    In this step, choose the data to retrain the model. You can wish to retrain the data using the reviewed data available from a specific version or choose new data altogether.
+    <ol>
+      <li>
+        <b>Data from Specific Version</b>: On the Retrain page, use the left panel to select the version(s) available for retraining. You can choose one or more versions to fetch data from, which will be used to retrain the model. The data pulled from these versions corresponds to the records reviewed and approved in the Review Hub for each selected model version.
+        <br/>
+        <br/>
+        <img src="/resources/Storage/ai-hub/images/ai-hub-extraction-retrain-choose-version.png" alt="ai-hub-extraction-retrain-choose-version" class="imggif" loading="lazy"/>
+        <br/>
+        <br/>
+        Once the versions are selected, the right panel displays the corresponding data. Review and choose the specific data entries you want to include as training data for the model. If you wish to use all available data from the selected version(s),  check the box at the top to select all entries at once.
+        <br/>
+        <br/>
+        After selecting the required data, click the Next button at the bottom of the screen.
+        <br/>
+        <br/>
+        <img src="/resources/Storage/ai-hub/images/ai-hub-extraction-retrain-use-old-data-next.png" alt="ai-hub-extraction-retrain-use-old-data-next" class="imggif" loading="lazy"/>
+        <br/>
+        <br/>
+        Confirm the entries for each specified entity, then click Next. After reviewing and verifying the selected data, click Retrain to begin the retraining process.
+        <br/>
+        <br/>
+        <img src="/resources/Storage/ai-hub/images/ai-hub-extraction-retrain-confirm-retrain.png" alt="ai-hub-extraction-retrain-confirm-retrain" class="imggif" loading="lazy"/>
+        <br/>
+        <br/>
+        After clicking the Retrain button, a new version of the model is created and listed on the Versions page. Initially, the status of the new version will be displayed as “In Progress”, and it will automatically update to “Completed” once the retraining process is finished.
+        <br/>
+        <br/>
+        <img src="/resources/Storage/ai-hub/images/ai-hub-extraction-retrain-new-version.png" alt="ai-hub-extraction-retrain-new-version" class="imggif" loading="lazy"/>
+        <br/>
+      </li>
+      <li>
+        <b>Add New Data</b>: You can retrain the model using an entirely new dataset by following the steps below:
+        <br/>
+        <br/>
+        On the Retrain page, click the Add New Data button at the bottom of the screen to initiate the retraining process with the new dataset.
+        <br/>
+        <br/>
+        <img src="/resources/Storage/ai-hub/images/ai-hub-extraction-retrain-add-new-data.png" alt="ai-hub-extraction-retrain-add-new-data" class="imggif" loading="lazy"/>
+        <br/>
+        <br/>
+        You are prompted to either drag and drop a file or select one from your local computer. Choose the appropriate file and upload it to the platform and click submit to proceed:
+        <br/>
+        <br/>
+        <img src="/resources/Storage/ai-hub/images/ai-hub-extraction-retrain-select-file-submit.png" alt="ai-hub-extraction-retrain-select-file-submit.png" class="imggif" loading="lazy"/>
+        <br/>
+        <br/>
+        The right panel in the Retrain page, under the Data section, is updated with the contents of the newly uploaded file. A New tag is displayed against each row to indicate that the data is newly added and will be used to retrain the model.
+        <br/>
+        <br/>
+        <img src="/resources/Storage/ai-hub/images/ai-hub-extraction-retrain-new-data-select.png" alt="ai-hub-extraction-retrain-new-data-select" class="imggif" loading="lazy"/>
+        <br/>
+        <br/>
+        After selecting the required data for retraining, click the Next button at the bottom of the screen.
+        <br/>
+        <br/>
+        <img src="/resources/Storage/ai-hub/images/ai-hub-extraction-retrain-select-data-next.png" alt="ai-hub-extraction-retrain-select-data-next" class="imggif" loading="lazy"/>
+        <br/>
+        <br/>
+        On the next screen, you are presented with options to train the model using the newly uploaded data.
+        <ul>
+          <li>
+            If you are retraining an extraction model, select the relevant entities.
+          </li>
+          <li>
+            If you are retraining a prediction model, review and confirm the predicted values. 
+          </li>
+        </ul>
+        Once the minimum number of entries is confirmed, the Retrain button becomes available. Click Retrain to initiate the training process. This action generates a new version of the model, which initially appears with the status In Progress and changes to Complete once training is successfully finished.
+        <br/>
+        <br/>
+        <img src="/resources/Storage/ai-hub/images/ai-hub-extraction-retrain-retrain-confirm-button.png" alt="ai-hub-extraction-retrain-retrain-confirm-button" class="imggif" loading="lazy"/>
+        <br/>
+        <br/>
+        After the Retrain button is clicked, a new version of the model becomes available in the Model Versions page, listed alongside the other existing versions of the selected model.
+        <br/>
+        <br/><img src="/resources/Storage/ai-hub/images/ai-hub-extraction-retrain-complete.png" alt="ai-hub-extraction-retrain-complete" class="imggif" loading="lazy"/><br/></li>
+    </ol>
+  </li>
+</ol>
+  <div class="footer">
+  &copy; Neutrinos. All rights reserved.
+  <br/>
+  <a id="lnkFeedback" target="_top" href="mailto:support@clickhelp.co">Send feedback</a> on this topic to Neutrinos.
+  <script type="text/javascript">
+    if (window['initFooter']) {
+      initFooter();
+    }
+  </script>
+</div>
+</body></html>

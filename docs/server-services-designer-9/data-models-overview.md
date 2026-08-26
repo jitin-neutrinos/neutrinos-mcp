@@ -1,0 +1,15 @@
+# Data Models Overview
+
+<https://documentation.neutrinos.com/articles/#!server-services-designer-9/data-models-overview>
+
+Data models define how data is connected to each other and how they are processed and stored inside the system. It defines the types and structures of data in your application and standardizes how data elements relate to one another.
+
+The process begins by collecting information about business requirements from stakeholders and end users. These business rules are then translated into data structures to formulate a concrete database design.
+
+A data model can be compared to a roadmap, an architect’s blueprint or any formal diagram that facilitates a deeper understanding of what is being designed. Data modeling provides a common, consistent, and predictable way of defining and managing data resources across an organization.
+
+Data Modeling Process
+ A typical data modeling workflow includes:
+ **Identifying Entities** - To begin the modeling process, you have to identify various entities, concepts, or events in the data set. Ensure that each entity is cohesive and logically discrete from others.**Determine Properties** - Properties are key factors that make entities discrete. These properties are called attributes and are unique to different entities. For example, a "policy" entity may have attributes such as policy id, claim details and transaction records.**Understanding relationships among entities** - Your data model’s first draft identifies the relationships between different entities. In an insurance process, a "policy" entity is related to another entity, "customer," where the relationship can be "policy id".**Connecting Attributes to entities** - This step ensures that data models illustrate how businesses use and process the data.**Adding Constraints** - A constraint is a set of restrictions added to a specific table. A unique constraint is a rule that forbids duplicate values in one or more columns within a table.**Finalize the Data Model** - Repeat and validate the above steps to establish an iterative data modeling process. Optimize and refine them as business needs change.Benefits of Data Modeling
+
+ Improves Data Quality - Provides a blueprint to better understand the relationship between data items. This blueprint can be used to understand the best possible approaches to design data systems and avoid premature coding.Reduces Cost - helps you catch errors and oversights in initial stages of development and are easier to fix.Accelerate development - a clear relationship with business concepts makes it easier to build screens and use UI patterns that carry the relevant data to the business.Lightweight apps - good isolation of business concepts means developers can build targeted queries against smaller data sets.**Data integrity** - creating data relationships instead of duplicating attributes ensures consistent data and simpler application logic.Using Neutrinos studio you can design two types of data Model:[Database Model](/articles/server-services-designer-9/database-model)[Abstract Model](/articles/server-services-designer-9/abstract)

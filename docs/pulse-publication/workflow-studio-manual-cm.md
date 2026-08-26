@@ -1,0 +1,21 @@
+# Key Features:
+
+<https://documentation.neutrinos.com/articles/#!pulse-publication/workflow-studio-manual-cm>
+
+Neutrinos Alpha Workflow Studio streamlines development by providing an intuitive development environment for building and managing complex business workflows. The studio enables rapid application development through drag-and-drop interface, allowing developers to design and implement workflows with minimal coding.
+
+### Key Features:
+
+1. **Intuitive Development Environment**: The Workflow Studio offers a visually driven interface, that is accessible for developers with limited programming expertise. The intuitive design allows for easy navigation, enabling developers to focus on the logical flow of business processes rather than the underlying technical complexities.
+2. **Drag-and-Drop Interface**: Workflow Studio offers drag-and-drop interface, that accelerates the development process through which developers can effortlessly add, configure, and connect various workflow components.
+3. **Business-Oriented Workflow Design**: The Workflow Studio is tailored to help developers build applications that align with specific business requirements.
+
+In a nutshell, Workflow Studio is a tool for developers aiming to streamline the creation of business workflows. This manual helps developers to build applications as per business requirements.
+
+| **Topic** |
+| --- |
+| [Get Started](/articles/pulse-publication/get-started-wf-cm) |
+| [Projects](/articles/pulse-publication/projects-wf-cm) |
+| [Cases](/articles/pulse-publication/cases-wf-cm) |
+| [Config Editors](/articles/pulse-publication/config-editors-wf-cm) |
+| [Global Custom Codes](/articles/pulse-publication/global-custom-code-cm) |
