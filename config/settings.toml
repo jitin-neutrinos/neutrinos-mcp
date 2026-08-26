@@ -88,3 +88,13 @@ fetch_max       = 12000
 [staleness]
 fresh_months    = 12
 aging_months    = 36
+
+[update]
+# Distribution: install.sh clones the repo and this keeps the shipped index
+# current without a manual re-clone. Runs once per server process, in a
+# background thread never on the tool-call path (see server._check_for_db_
+# updates_once — an earlier version of this ran synchronously and a stalled
+# corporate-proxy connection to GitHub tore down the whole MCP session).
+enabled         = true
+repo            = "jitin-neutrinos/neutrinos-mcp"
+timeout_s       = 3.0

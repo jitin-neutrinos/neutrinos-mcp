@@ -183,6 +183,7 @@ future maintainers.
 | **AD-10** | Retrieved documentation is **untrusted input** and is delimited/neutralised | Pass through verbatim | Indirect prompt injection is the top agentic risk in the 2026 OWASP lists; docs are a third-party content channel |
 | **AD-11** | Every tool returns typed structured output with a stable `ref` | Free-text blobs (v1) | Schema-validated output is machine-checkable, citation-verifiable, and injection-resistant |
 | **AD-12** | Index build manifest is written into the DB and verified at server start | Implicit coupling | Prevents serving an index built by a different embedding model — a silent, total quality failure |
+| **AD-13** | Distribution via `install.sh`/`install.ps1` + a daily CI rebuild published as a GitHub release; the running server refreshes its index from that release in a background thread, once per process, never on the request path | Ship the repo only; rebuild locally per install | The index build takes ~25 min and needs a live crawl — most installs should not pay that cost. **CONFIRMED 2026-08-26, found and fixed during review**: the first implementation ran the update check synchronously inside the first tool call, with only a per-socket `timeout=` bound; on a network that stalls rather than refuses (a proxy or firewall, not a clean "no route"), that blocked the call past the MCP client's own timeout and tore down the whole stdio connection — this is what broke the session in practice, not a retrieval bug. Fixed by moving the check to a fire-and-forget daemon thread started once from `main()`, and by validating a downloaded file's `build_manifest` (AD-12) and backing up the existing DB to `.prev` before replacing it, since GitHub release metadata carries no checksum or signature to check instead. A second, unrelated Windows finding surfaced building `install.ps1`: the same execution policy that blocks `pip.exe` on a locked-down machine also blocks pip's generated `.exe` console-script launchers (`neutrinos-mcp.exe` etc.) — confirmed by actually running one and getting the identical `Access is denied`. Both scripts (and the README's manual fallback) therefore register the server via `python.exe -m neutrinos_mcp.server`, never the generated executable |
 
 ---
 
@@ -261,9 +262,15 @@ neutrinos-mcp/
 ├─ pyproject.toml                  # deps, pins, entry points, tool config
 ├─ README.md                       # quickstart: build index, run server, run eval
 ├─ implementation_plan.md          # this document
+├─ install.sh                      # macOS/Linux installer (AD-13)
+├─ install.ps1                     # Windows installer (AD-13) — registers via python.exe -m
+│                                  # neutrinos_mcp.server, never the generated .exe (see AD-13)
 ├─ ingest.py                       # SUPERSEDED v1 script (ChromaDB dense-only,
 │                                  # RecursiveCharacterTextSplitter — §0 rows 6-8).
 │                                  # Kept for provenance; nothing in src/ imports it.
+│
+├─ .github/workflows/
+│  └─ build-db.yml                 # daily: crawl -> extract -> chunk -> index -> GitHub release (AD-13)
 │
 ├─ config/
 │  ├─ publications.yaml            # §6.5 — THE reviewed file. 53 entries.
@@ -1741,7 +1748,8 @@ description problem. **What the agent omits is often more informative than what 
 
 | Concern | Approach |
 |---|---|
-| **Refresh** | Scheduled crawl; sitemap `lastmod` + `content_hash` delta. Full rebuild is idempotent and cheap (AD-01) |
+| **Refresh** | Scheduled crawl; sitemap `lastmod` + `content_hash` delta. Full rebuild is idempotent and cheap (AD-01). Realized as `.github/workflows/build-db.yml`: daily, all four ingest stages in order, `raw/` cached across runs so the crawl's own delta mode (§6.1) actually has something to diff against on an otherwise-ephemeral runner |
+| **Distribution & auto-update** | `install.sh` clones the repo and fetches the newest release DB via `gh release download`; a running server independently checks for a newer release once per process, in a background thread that never sits on the request path (AD-13). Both point at the same `data/neutrinos.db` release asset, so a machine can go from nothing to a working server without paying the 25-minute crawl locally |
 | **Publish** | Build to `.new`, verify integrity + manifest + smoke queries, `os.replace`. Keep the previous file for one-command rollback |
 | **Drift detection** | Alert on: topic count change > 10%, any publication dropping to zero, a new publication ID that `publications.yaml` does not classify |
 | **Observability** | OpenTelemetry GenAI semantic conventions. One span per pipeline stage (`retrieve.bm25`, `retrieve.dense`, `fuse.rrf`, `rerank`, `dedup`, `expand`) with candidate counts, scores and latency. Makes "why did it return that?" answerable from a trace |

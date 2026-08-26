@@ -20,7 +20,9 @@ import argparse
 import json
 import logging
 import os
+import sqlite3
 import sys
+import threading
 from typing import Any
 
 from .config import ROOT, settings
@@ -34,51 +36,104 @@ log = logging.getLogger("neutrinos-mcp")
 _kb: KnowledgeBase | None = None
 
 
-def check_for_db_updates():
-    """Checks GitHub for a new database release and downloads it if newer."""
+def _looks_like_a_valid_index(db_path) -> bool:
+    """Sanity-check a downloaded file before it replaces the live index.
+
+    `check_for_db_updates` has no way to check a signature or checksum (the
+    release workflow does not publish one), so this is the floor: open
+    read-only and confirm it is a SQLite file with the `build_manifest` table
+    AD-12 relies on. Cheap, and it is the difference between a bad download
+    silently corrupting the server and it being refused before it ever
+    replaces a working file.
+    """
     try:
-        import urllib.request
-        import json
+        c = sqlite3.connect(f"file:{db_path}?mode=ro", uri=True)
+        try:
+            row = c.execute(
+                "SELECT value FROM build_manifest WHERE key='schema_version'").fetchone()
+            return row is not None
+        finally:
+            c.close()
+    except Exception:
+        return False
+
+
+def _check_for_db_updates_once() -> None:
+    """Best-effort background refresh of `data/neutrinos.db` from the latest
+    GitHub release, for the install-script distribution flow: `install.sh`
+    clones the repo and this keeps it current without a manual re-clone.
+
+    Three things this deliberately does that the first version of this
+    function did not:
+
+      1. Runs in a daemon thread that is fired-and-forgotten from `main()`,
+         never from `kb()`. The original version ran synchronously inside the
+         first real tool call — a slow or black-holed connection (common
+         behind a corporate proxy, which this deployment has already hit
+         elsewhere) blocked that call past the MCP client's own timeout and
+         tore down the whole stdio connection. `urllib`'s `timeout=` bounds
+         socket read/connect time but not every hang a captive network can
+         cause, so "never on the request path" is the actual fix, not a
+         shorter number.
+      2. Backs up the existing file to `.prev` before replacing it (the same
+         pattern `ingest.index.publish()` uses) and validates the download
+         with `_looks_like_a_valid_index` first — an interrupted or truncated
+         transfer must not leave a broken `neutrinos.db` with no way back.
+      3. Resolves the DB path via `ROOT`, not a bare relative path — the
+         server can be launched with any cwd (exactly how it's registered
+         with Claude Code today, via an absolute interpreter path).
+    """
+    try:
         import datetime
-        from pathlib import Path
-        
-        # IMPORTANT: Make sure this matches your actual GitHub org/repo
-        repo = "neutrinos/neutrinos-mcp" 
+        import urllib.request
+
+        cfg = settings()
+        repo = cfg.get("update.repo", "jitin-neutrinos/neutrinos-mcp")
+        timeout_s = cfg.get("update.timeout_s", 3.0)
         req = urllib.request.Request(f"https://api.github.com/repos/{repo}/releases/latest")
-        req.add_header('User-Agent', 'neutrinos-mcp-updater')
-        
-        # Fast 3-second timeout so it doesn't block startup if offline
-        with urllib.request.urlopen(req, timeout=3.0) as response:
+        req.add_header("User-Agent", "neutrinos-mcp-updater")
+
+        with urllib.request.urlopen(req, timeout=timeout_s) as response:
             data = json.loads(response.read().decode())
-            published_at = data.get("published_at")
-            
-            db_path = Path("data/neutrinos.db")
-            db_timestamp = db_path.stat().st_mtime if db_path.exists() else 0
-            
-            if published_at:
-                dt = datetime.datetime.strptime(published_at, "%Y-%m-%dT%H:%M:%SZ")
-                remote_ts = dt.replace(tzinfo=datetime.timezone.utc).timestamp()
-                
-                # If remote release is newer than local DB modification time
-                if remote_ts > db_timestamp:
-                    log.info(f"New DB version found ({data.get('tag_name')}). Downloading...")
-                    asset_url = next((a.get("browser_download_url") for a in data.get("assets", []) if a.get("name") == "neutrinos.db"), None)
-                    
-                    if asset_url:
-                        db_path.parent.mkdir(parents=True, exist_ok=True)
-                        tmp_path = db_path.with_suffix(".db.tmp")
-                        urllib.request.urlretrieve(asset_url, tmp_path)
-                        tmp_path.replace(db_path)
-                        log.info("Database updated successfully.")
-    except Exception as e:
-        log.warning(f"Auto-update check failed (this is non-fatal): {e}")
+
+        published_at = data.get("published_at")
+        if not published_at:
+            return
+        remote_ts = datetime.datetime.strptime(
+            published_at, "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=datetime.timezone.utc).timestamp()
+
+        db_path = ROOT / cfg["paths.db"]
+        if db_path.exists() and db_path.stat().st_mtime >= remote_ts:
+            return  # already current
+
+        asset_url = next((a.get("browser_download_url") for a in data.get("assets", [])
+                          if a.get("name") == db_path.name), None)
+        if not asset_url:
+            return
+
+        db_path.parent.mkdir(parents=True, exist_ok=True)
+        tmp_path = db_path.with_suffix(".db.tmp")
+        urllib.request.urlretrieve(asset_url, tmp_path)
+
+        if not _looks_like_a_valid_index(tmp_path):
+            log.warning("downloaded release asset failed validation; keeping existing index")
+            tmp_path.unlink(missing_ok=True)
+            return
+
+        prev_path = ROOT / cfg["paths.db_prev"]
+        if db_path.exists():
+            prev_path.unlink(missing_ok=True)
+            db_path.replace(prev_path)
+        tmp_path.replace(db_path)
+        log.info("database updated to release %s", data.get("tag_name"))
+    except Exception as exc:
+        log.warning("auto-update check failed (non-fatal): %s", exc)
 
 
 def kb() -> KnowledgeBase:
     """Opened lazily and reused: model load is ~1s and must not be paid per call."""
     global _kb
     if _kb is None:
-        check_for_db_updates()
         _kb = KnowledgeBase()
     return _kb
 
@@ -218,6 +273,12 @@ def main() -> None:
         level=logging.DEBUG if args.verbose else logging.WARNING,
         stream=sys.stderr,  # stdout is the transport on stdio
         format="%(levelname)s %(name)s %(message)s")
+
+    if settings().get("update.enabled", True):
+        # Fired, not joined: server startup and every tool call must be able
+        # to proceed regardless of what this thread is doing or how long a
+        # captive network takes to give up on it (see _check_for_db_updates_once).
+        threading.Thread(target=_check_for_db_updates_once, daemon=True).start()
 
     enabled = [t.strip() for t in args.tools.split(",")] if args.tools else None
     server = build_server(enabled)

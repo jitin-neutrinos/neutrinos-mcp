@@ -25,6 +25,7 @@ raw/
 
 # IDE / System / Claude Code
 .mcp.json
+.claude/
 .vscode/
 .idea/
 .DS_Store
