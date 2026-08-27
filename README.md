@@ -9,23 +9,21 @@ full design rationale (architecture decisions, data model, evaluation methodolog
 
 ## Quick start
 
-`neutrinos-mcp` is a **private** repo, so every option below needs `gh auth login` already run
-(for fetching the installer script itself and the release DB) *and* `git` configured with a
-credential that can clone it — credential manager, PAT, or SSH key (the installer's own `git
-clone`/`git pull` step needs this even though the one-liner itself doesn't). Without that,
-either step fails with a 404, not a permissions error, which is easy to misread as "the repo
-doesn't exist."
+`neutrinos-mcp` is a **public** repo, so no authentication is needed to clone it, fetch a release,
+or run either one-liner below — just `git` and (optionally) `gh` for pulling the pre-built database
+faster (see Distribution below; without `gh` the server fetches it automatically on first use
+instead, just not during install).
 
 **macOS/Linux — one line:**
 
 ```bash
-curl -fsSL -H "Authorization: token $(gh auth token)" https://raw.githubusercontent.com/jitin-neutrinos/neutrinos-mcp/master/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/jitin-neutrinos/neutrinos-mcp/master/install.sh | bash
 ```
 
 **Windows (PowerShell) — one line:**
 
 ```powershell
-iex (irm -Headers @{Authorization="token $(gh auth token)"} https://raw.githubusercontent.com/jitin-neutrinos/neutrinos-mcp/master/install.ps1)
+iex (irm https://raw.githubusercontent.com/jitin-neutrinos/neutrinos-mcp/master/install.ps1)
 ```
 
 Each fetches the installer script itself (not the whole repo) and runs it directly — earlier
