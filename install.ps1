@@ -157,6 +157,52 @@ try {
         Write-Host "  claude mcp add neutrinos-docs --scope user -- `"$PythonExe`" -m neutrinos_mcp.server"
     }
 
+    Write-Host "Registering with Claude Desktop / Cowork..."
+    # Cowork (the agentic-work tab in the Claude Desktop app) is not a
+    # separate app and has no config of its own -- it shares
+    # claude_desktop_config.json, and Desktop's own SDK layer bridges servers
+    # registered there into the sandboxed Cowork VM automatically. A server
+    # added directly inside a Cowork session, by contrast, cannot connect
+    # (the VM is isolated from the host) -- this is why the registration
+    # target here is Desktop's config file, not something inside Cowork
+    # itself. Config path per Anthropic's docs: %APPDATA%\Claude on Windows.
+    $DesktopConfig = Join-Path $env:APPDATA "Claude\claude_desktop_config.json"
+    New-Item -ItemType Directory -Force -Path (Split-Path $DesktopConfig) | Out-Null
+
+    # Merged with Python, not overwritten or hand-edited: this file commonly
+    # already has the user's OTHER MCP servers in it, and a naive overwrite
+    # would silently delete them. A temp .py file rather than `python -c`
+    # here -- reliably quoting a multi-line script through PowerShell's
+    # own argument parsing is its own source of subtle breakage.
+    $mergeScript = @'
+import json, sys
+from pathlib import Path
+
+config_path, cmd, args = Path(sys.argv[1]), sys.argv[2], sys.argv[3:]
+config = {}
+if config_path.exists():
+    try:
+        config = json.loads(config_path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError:
+        print(f"  Existing {config_path} is not valid JSON -- leaving it untouched.")
+        sys.exit(1)
+
+config.setdefault("mcpServers", {})["neutrinos-docs"] = {"command": cmd, "args": args}
+config_path.write_text(json.dumps(config, indent=2), encoding="utf-8")
+print(f"  Registered in {config_path}")
+'@
+    $tmpScript = Join-Path $env:TEMP "neutrinos_mcp_desktop_merge.py"
+    Set-Content -Path $tmpScript -Value $mergeScript -Encoding utf8
+
+    & $PythonExe $tmpScript $DesktopConfig $PythonExe "-m" "neutrinos_mcp.server"
+    if ($LASTEXITCODE -eq 0) {
+        Write-Host "Registered with Claude Desktop (Cowork picks this up automatically -- it shares this config)." -ForegroundColor Green
+        Write-Host "Restart Claude Desktop for the change to take effect."
+    } else {
+        Write-Host "Could not update Claude Desktop's config. Claude Code registration above is unaffected." -ForegroundColor Yellow
+    }
+    Remove-Item $tmpScript -ErrorAction SilentlyContinue
+
     $Succeeded = $true
 }
 finally {

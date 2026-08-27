@@ -136,3 +136,55 @@ else
     echo "claude mcp add neutrinos-docs --scope user -- $INSTALL_DIR/.venv/bin/neutrinos-mcp"
 fi
 set -e
+
+echo "🖥️  Registering with Claude Desktop / Cowork..."
+# Cowork (the agentic-work tab in the Claude Desktop app) is not a separate
+# app and has no config of its own -- it shares claude_desktop_config.json
+# and Desktop's own SDK layer bridges servers registered there into the
+# sandboxed Cowork VM automatically. A server added directly inside a Cowork
+# session, by contrast, cannot connect (the VM is isolated from the host) --
+# this is why the registration target here is Desktop's config file, not
+# something inside Cowork itself. Config file location per Anthropic's docs:
+# macOS ~/Library/Application Support/Claude, Windows %APPDATA%\Claude,
+# Linux (official beta as of mid-2026, Debian/Ubuntu) ~/.config/Claude.
+set +e
+case "$(uname -s)" in
+    Darwin) DESKTOP_CONFIG="$HOME/Library/Application Support/Claude/claude_desktop_config.json" ;;
+    Linux)  DESKTOP_CONFIG="$HOME/.config/Claude/claude_desktop_config.json" ;;
+    *)      DESKTOP_CONFIG="" ;;
+esac
+
+if [ -n "$DESKTOP_CONFIG" ]; then
+    mkdir -p "$(dirname "$DESKTOP_CONFIG")"
+    # Merged with Python, not overwritten or hand-edited with sed/jq: this
+    # file commonly already has the user's OTHER MCP servers in it, and a
+    # naive overwrite would silently delete them. Python is already a hard
+    # requirement of this installer, so this adds no new dependency (unlike
+    # requiring `jq`, which is not guaranteed present).
+    ./.venv/bin/python - "$DESKTOP_CONFIG" "$INSTALL_DIR/.venv/bin/neutrinos-mcp" <<'PY'
+import json, sys
+from pathlib import Path
+
+config_path, server_cmd = Path(sys.argv[1]), sys.argv[2]
+config = {}
+if config_path.exists():
+    try:
+        config = json.loads(config_path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError:
+        print(f"  Existing {config_path} is not valid JSON -- leaving it untouched.")
+        sys.exit(1)
+
+config.setdefault("mcpServers", {})["neutrinos-docs"] = {"command": server_cmd, "args": []}
+config_path.write_text(json.dumps(config, indent=2), encoding="utf-8")
+print(f"  Registered in {config_path}")
+PY
+    if [ $? -eq 0 ]; then
+        echo "✅ Registered with Claude Desktop (Cowork picks this up automatically -- it shares this config)."
+        echo "   Restart Claude Desktop for the change to take effect."
+    else
+        echo "⚠️  Could not update Claude Desktop's config. Claude Code registration above is unaffected."
+    fi
+else
+    echo "⚠️  Unrecognized OS for a Claude Desktop config path -- skipping. Claude Code registration above is unaffected."
+fi
+set -e

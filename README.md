@@ -44,14 +44,20 @@ creates a venv, installs the package (`python -m pip install -e .` — never a b
 since that executable specifically gets blocked by execution policy on some locked-down corporate
 machines while `python.exe` itself is still allowed), fetches the latest pre-built
 `data/neutrinos.db` from the newest GitHub release via `gh release download` if `gh` is installed
-(otherwise the running server fetches it on first use instead — see Distribution below), and
-registers `neutrinos-docs` with Claude Code at **user scope** (every project, not just this one).
-**If anything up through the package install fails, everything the run created is removed before
-it exits** — a failed attempt never leaves wreckage behind to break the next one; a failure in the
-DB fetch or Claude Code registration steps does not, since a working local install that just
-hasn't fetched its DB yet, or still needs manual registration, isn't "failed." **Start a new
-Claude Code session afterward** — a server registered mid-session isn't picked up until the
-client reconnects.
+(otherwise the running server fetches it on first use instead — see Distribution below), registers
+`neutrinos-docs` with Claude Code at **user scope** (every project, not just this one), and merges
+an entry into Claude Desktop's `claude_desktop_config.json` (macOS/Linux/Windows paths handled;
+merged with a small Python script, not overwritten, since that file commonly already has other MCP
+servers in it). **This also covers Cowork** — the agentic-work tab in the Claude Desktop app isn't
+a separate app and has no config of its own; Desktop's own SDK layer bridges servers registered in
+its config into Cowork's sandboxed VM automatically. A server added directly inside a Cowork
+session, by contrast, can't connect at all (the VM is isolated from the host), which is why the
+registration target is Desktop's config file specifically. **If anything up through the package
+install fails, everything the run created is removed before it exits** — a failed attempt never
+leaves wreckage behind to break the next one; a failure in the DB fetch or either registration step
+does not, since a working local install that just hasn't fetched its DB yet, or still needs manual
+registration, isn't "failed." **Restart Claude Code / Claude Desktop afterward** — a server
+registered while a session is already running isn't picked up until the client reconnects.
 
 To build from source instead of using the pre-built release DB:
 
