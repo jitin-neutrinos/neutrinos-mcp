@@ -19,6 +19,7 @@ dependencies = [
   "pyyaml>=6.0",              # publications.yaml
   "jsonschema>=4.22",         # §8.5 output validation
   "opentelemetry-sdk>=1.25",  # §11
+  "openai>=1.0",              # Nvidia NIM / GraphRAG extraction
 ]
 
 [project.optional-dependencies]

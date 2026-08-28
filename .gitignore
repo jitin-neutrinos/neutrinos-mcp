@@ -34,3 +34,5 @@ Thumbs.db
 
 # Scratch / Analytics scripts
 analyze_discourse.py
+*.db.tmp*
+*.db.new

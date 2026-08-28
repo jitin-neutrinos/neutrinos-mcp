@@ -1,7 +1,11 @@
-"""Phase 3.5: Entity and Relationship Extraction (Agentic GraphRAG).
+"""Phase 3.5: Entity and Relationship Extraction (Local SLM).
 
-Reads chunks.jsonl, extracts thematic entities and semantic relationships using Nvidia NIM,
+Reads chunks.jsonl, extracts thematic entities and semantic relationships using a LOCAL Ollama model,
 and writes them to entities.jsonl and relations.jsonl for index.py to load.
+
+Requirements:
+- Ollama installed and running (http://localhost:11434)
+- Model pulled: `ollama run phi3:mini` or `ollama run llama3.1:8b`
 """
 
 from __future__ import annotations
@@ -10,16 +14,17 @@ import json
 import logging
 import asyncio
 from pathlib import Path
-
 from openai import AsyncOpenAI
-
 from neutrinos_mcp.config import ROOT
 
 log = logging.getLogger(__name__)
 
-API_KEY = "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"
-BASE_URL = "https://integrate.api.nvidia.com/v1"
-MODEL = "nvidia/nemotron-3-super-120b-a12b"
+# Point to Local Ollama Server instead of NVIDIA NIM
+API_KEY = "ollama"
+BASE_URL = "http://localhost:11434/v1"
+
+# We recommend phi3:mini for extremely fast CPU extraction, or llama3.1:8b if you have 16GB RAM.
+MODEL = "phi3:mini" 
 
 PROMPT_SYS = """You are a documentation knowledge graph extractor. 
 Extract technical entities (Product, Feature, API, Concept) and relationships (DEPENDS_ON, CONFIGURES, IMPLEMENTS, DEPRECATES, RELATED_TO) from the text.
@@ -45,7 +50,8 @@ async def process_chunk(client: AsyncOpenAI, chunk: dict, sem: asyncio.Semaphore
                 ],
                 temperature=0.0,
                 max_tokens=1024,
-                response_format={"type": "json_object"}
+                # Note: Not all local SLMs support strict json_object, but we enforce it in prompt
+                response_format={"type": "json_object"} 
             )
             raw = resp.choices[0].message.content.strip()
             if raw.startswith("```json"):
@@ -80,6 +86,7 @@ async def process_chunk(client: AsyncOpenAI, chunk: dict, sem: asyncio.Semaphore
                         "dst": dst_name,
                         "chunk_id": chunk["id"]
                     })
+            log.info(f"Chunk {chunk['id']} complete: {len(clean_entities)} entities.")
             return clean_entities, clean_relations
         except Exception as e:
             log.warning(f"Failed to process chunk {chunk.get('id')}: {e}")
@@ -87,7 +94,9 @@ async def process_chunk(client: AsyncOpenAI, chunk: dict, sem: asyncio.Semaphore
 
 async def build_async(chunks_path: Path, entities_out: Path, relations_out: Path) -> None:
     client = AsyncOpenAI(api_key=API_KEY, base_url=BASE_URL)
-    sem = asyncio.Semaphore(10)
+    
+    # Running locally on CPU: Keep concurrency lower so it doesn't crash your system
+    sem = asyncio.Semaphore(4)
     
     chunks = []
     log.info("Reading chunks...")
@@ -97,11 +106,10 @@ async def build_async(chunks_path: Path, entities_out: Path, relations_out: Path
             c = json.loads(line)
             c["id"] = i + 1
             chunks.append(c)
-            # NOTE: Capping at 100 chunks for build efficiency during testing
-            if len(chunks) >= 100:
-                break
+            # REMOVED THE LIMIT: It will now process all 10,000+ chunks.
                 
-    log.info(f"Processing {len(chunks)} chunks via Nvidia NIM...")
+    log.info(f"Processing {len(chunks)} chunks via Local Ollama ({MODEL})...")
+    log.info("This will take a significant amount of time on CPU. You can monitor the logs below.")
     
     tasks = [process_chunk(client, chunk, sem) for chunk in chunks]
     results = await asyncio.gather(*tasks)
@@ -126,13 +134,13 @@ async def build_async(chunks_path: Path, entities_out: Path, relations_out: Path
         for rel in global_relations:
             f.write(json.dumps(rel) + "\n")
             
-    log.info(f"Extracted {len(global_entities)} entities and {len(global_relations)} relations.")
+    log.info(f"DONE! Extracted {len(global_entities)} entities and {len(global_relations)} relations.")
 
 def build(chunks_path: Path, entities_out: Path, relations_out: Path) -> None:
     asyncio.run(build_async(chunks_path, entities_out, relations_out))
 
 if __name__ == "__main__":
-    logging.basicConfig(level=logging.INFO, format="%(levelname)s %(message)s")
+    logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
     data_dir = ROOT / "data"
     build(
         data_dir / "chunks.jsonl",
