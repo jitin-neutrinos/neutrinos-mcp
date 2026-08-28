@@ -133,6 +133,110 @@ def search_docs(kb: KnowledgeBase, args: dict) -> dict:
     return out
 
 
+def _evidence_item(h: dict, text: str) -> dict:
+    """One `common.json#/$defs/hit` entry for `answer_pack`. Deliberately not
+    `_hit_payload` (used by `search_docs`): that one adds `_content_warning`/
+    `_truncated`, which are fine under `search_docs`'s own looser output
+    schema but are not declared fields on the shared `hit` $def, so including
+    them here would fail `answer_pack`'s `additionalProperties: false`
+    validation (`server.validate_output`)."""
+    out = {
+        "ref": h["ref"], "url": h["url"], "title": h["title"],
+        "heading_path": h["heading_path"], "product": h["product"],
+        "version": h.get("version"), "is_current": h["is_current"],
+        "last_updated": h.get("last_updated"), "staleness": h["staleness"],
+        "score": h["score"], "text": text,
+    }
+    if h.get("retrieved_by"):
+        out["retrieved_by"] = h["retrieved_by"]
+    if h.get("also_in_versions"):
+        out["also_in_versions"] = h["also_in_versions"]
+    return out
+
+
+def answer_pack(kb: KnowledgeBase, args: dict) -> dict:
+    """Phase 5 (plan §8.2 #6, §8.5.7). One call assembling a citation-ready,
+    token-budgeted evidence bundle plus a binding `recommended_action`, for a
+    caller that composes one reply per question rather than chaining
+    `search_docs` -> `fetch_document` -> `list_related` itself.
+
+    Built once a real downstream consumer existed to earn it against (a
+    Discourse-question-answering bot, whose own retrieval design already
+    treats `recommended_action` as binding) — the plan's own gating
+    condition ("only if transcript analysis shows the Responder making
+    repetitive search_docs -> fetch_document -> list_related sequences") is
+    satisfied by that consumer's architecture directly, not by transcript
+    mining after the fact.
+
+    Reuses `kb.search()` exactly like `search_docs` — same scope resolution,
+    same hybrid retrieval + rerank + confidence gate — so the two tools never
+    disagree about what counts as good evidence for the same question. This
+    handler's own job is strictly the parts `search_docs` does not do:
+    token-budgeted selection (vs. a fixed `top_k`), a deduplicated citation
+    table, and the `recommended_action`/`caveat`/`coverage_notes` decision.
+    """
+    cfg = settings()
+    token_budget = int(args.get("token_budget", 6000))
+    res = kb.search(
+        query=args["question"],
+        product=args.get("product"),
+        version=args.get("version"),
+        include_superseded=False,
+        top_k=cfg["retrieval.max_top_k"],
+    )
+
+    evidence: list[dict] = []
+    citations: dict[str, dict] = {}  # keyed by url; insertion order == rank order
+    used = 0
+    for h in res.hits:
+        text, _flags = clean_passage(h["text"])
+        text, _truncated = _trim_passage(text, 500)
+        t = est_tokens(text)
+        if evidence and used + t > token_budget:
+            break
+        used += t
+        evidence.append(_evidence_item(h, text))
+        citations.setdefault(h["url"], {"ref": h["ref"], "url": h["url"], "title": h["title"]})
+
+    if not res.hits or not res.sufficient_evidence:
+        action = "escalate"
+    elif res.version_ambiguous:
+        action = "ask_for_version"
+    else:
+        action = "answer"
+
+    caveat = None
+    if action == "answer" and evidence and evidence[0]["staleness"] == "stale":
+        action = "answer_with_caveat"
+        caveat = ("This information may be out of date — the top matching page has not "
+                  "been updated recently.")
+
+    coverage_notes: list[str] = []
+    if action == "ask_for_version":
+        coverage_notes.append(
+            "Strong matches exist in more than one product version; ask which version "
+            "the user is on rather than guessing.")
+    elif action == "escalate":
+        coverage_notes.append(
+            "No passages matched this question in the indexed documentation."
+            if not res.hits else
+            "Evidence relevance is below the confidence threshold for a direct answer.")
+
+    scope_dict = (res.scope.as_dict() if res.scope else
+                  {"products": [], "versions": [], "include_superseded": False, "inferred": True})
+
+    return {
+        "recommended_action": action,
+        "caveat": caveat,
+        "evidence": evidence,
+        "citations": list(citations.values()),
+        "coverage_notes": coverage_notes,
+        "confidence": res.confidence,
+        "scope_applied": scope_dict,
+        "tokens_used": used,
+    }
+
+
 def fetch_document(kb: KnowledgeBase, args: dict) -> dict:
     cfg = settings()
     pub, slug, anchor = parse_ref(args["ref"])
@@ -286,12 +390,18 @@ def list_products(kb: KnowledgeBase, args: dict) -> dict:
     }
 
 
+def traverse_knowledge_graph(kb: KnowledgeBase, args: dict) -> dict:
+    return kb.traverse_knowledge_graph(args["entity_name"], int(args.get("max_depth", 2)))
+
+
 HANDLERS: dict[str, Callable[[KnowledgeBase, dict], dict]] = {
     "search_docs": search_docs,
     "fetch_document": fetch_document,
     "list_related": list_related,
     "compare_versions": compare_versions,
     "list_products": list_products,
+    "answer_pack": answer_pack,
+    "traverse_knowledge_graph": traverse_knowledge_graph,
 }
 
 

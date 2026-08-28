@@ -182,3 +182,25 @@ CREATE VIRTUAL TABLE vec_chunks USING vec0(
 -- query:  SELECT chunk_id, distance FROM vec_chunks
 --         WHERE embedding MATCH :q AND k = 50
 --           AND family IN (...) AND is_current = 1;
+
+-- =====================================================================
+-- Semantic Knowledge Graph (Agentic GraphRAG)
+-- =====================================================================
+
+CREATE TABLE entity (
+    id          INTEGER PRIMARY KEY,
+    name        TEXT    NOT NULL,
+    category    TEXT    NOT NULL,
+    description TEXT
+);
+CREATE INDEX idx_entity_name ON entity(name);
+
+CREATE TABLE entity_relation (
+    src_id      INTEGER NOT NULL REFERENCES entity(id),
+    rel_type    TEXT    NOT NULL,
+    dst_id      INTEGER NOT NULL REFERENCES entity(id),
+    chunk_id    INTEGER NOT NULL REFERENCES chunk(id),
+    PRIMARY KEY (src_id, rel_type, dst_id, chunk_id)
+) WITHOUT ROWID;
+CREATE INDEX idx_entity_rel_src ON entity_relation(src_id, rel_type);
+CREATE INDEX idx_entity_rel_dst ON entity_relation(dst_id, rel_type);

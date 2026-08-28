@@ -1056,6 +1056,40 @@ _PAYLOAD = r"""{
      }
     }
    }
+  },
+  {
+   "name": "traverse_knowledge_graph",
+   "title": "Traverse the semantic knowledge graph",
+   "description": "Explores thematic relationships between entities, returning nodes and edges up to max_depth hops. Use this to understand structural or dependency links between concepts rather than text search.",
+   "annotations": {
+    "readOnlyHint": true,
+    "openWorldHint": false,
+    "idempotentHint": true
+   },
+   "inputSchema": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "type": "object",
+    "additionalProperties": false,
+    "required": ["entity_name"],
+    "properties": {
+     "entity_name": {
+      "type": "string",
+      "description": "Name of the entity to start traversal from, e.g., 'Data Binding'"
+     },
+     "max_depth": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 3,
+      "default": 2,
+      "description": "Maximum number of relationship hops to traverse."
+     }
+    }
+   },
+   "outputSchema": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "type": "object",
+    "additionalProperties": true
+   }
   }
  ]
 }"""

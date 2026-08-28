@@ -165,6 +165,32 @@ def build(backend: str | None = None, limit: int | None = None) -> dict:
     stats["chunks"] = len(chunk_rows)
     conn.commit()
 
+    # -- Agentic GraphRAG Entities & Relations -----------------------------
+    entities_path = ROOT / "data" / "entities.jsonl"
+    relations_path = ROOT / "data" / "relations.jsonl"
+    if entities_path.exists() and relations_path.exists():
+        entity_rows = []
+        eid_map = {}
+        eid = 0
+        with entities_path.open(encoding="utf-8") as fh:
+            for line in fh:
+                e = json.loads(line)
+                eid += 1
+                eid_map[e["id"]] = eid
+                entity_rows.append((eid, e["name"], e["category"], e.get("description", "")))
+        conn.executemany("INSERT INTO entity (id,name,category,description) VALUES (?,?,?,?)", entity_rows)
+        
+        relation_rows = []
+        with relations_path.open(encoding="utf-8") as fh:
+            for line in fh:
+                r = json.loads(line)
+                if r["src"] in eid_map and r["dst"] in eid_map:
+                    relation_rows.append((eid_map[r["src"]], r["rel"], eid_map[r["dst"]], r["chunk_id"]))
+        conn.executemany("INSERT OR IGNORE INTO entity_relation (src_id,rel_type,dst_id,chunk_id) VALUES (?,?,?,?)", relation_rows)
+        conn.commit()
+        stats["entities"] = len(entity_rows)
+        stats["entity_relations"] = len(relation_rows)
+
     # -- edges -------------------------------------------------------------
     edges: set[tuple] = set()
     for sp, ss, rel, dp, ds in pending_edges:

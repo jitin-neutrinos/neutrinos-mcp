@@ -205,6 +205,10 @@ class KnowledgeBase:
         row = self.topic_row(pub, slug)
         return typed_neighbourhood(self.conn, int(row[0]), limit_per_relation)
 
+    def traverse_knowledge_graph(self, entity_name: str, max_depth: int = 2) -> dict:
+        from .retrieval.graph_search import traverse_graph
+        return traverse_graph(self.conn, entity_name, max_depth)
+
     # ------------------------------------------------------------- versions
 
     def compare_versions(self, slug: str, product: str | None = None,

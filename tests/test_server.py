@@ -103,10 +103,57 @@ def test_build_server_registers_exactly_the_default_enabled_tools():
     assert names == set(DEFAULT_ENABLED)
 
 
-def test_answer_pack_has_a_schema_but_is_not_wired_to_a_handler():
-    """Phase 5, gated on evaluation (plan §8.2 #6) — the contract exists so it
-    can be reviewed, but calling it before it is earned must fail cleanly."""
+def test_answer_pack_is_wired_to_a_handler():
+    """Phase 5's gate (plan §8.2 #6) is lifted by explicit decision, once a
+    real downstream consumer existed whose own architecture already needed
+    exactly this (a Discourse-question-answering bot treating
+    `recommended_action` as binding) — see `handlers.answer_pack`'s
+    docstring. `DEFAULT_ENABLED` is untouched: still opt-in via `--tools`,
+    not on by default."""
     from neutrinos_mcp.tools.handlers import HANDLERS
 
     assert "answer_pack" in TOOLS_BY_NAME
-    assert "answer_pack" not in HANDLERS
+    assert "answer_pack" in HANDLERS
+    assert "answer_pack" not in DEFAULT_ENABLED
+
+
+@needs_index
+class TestAnswerPack:
+    def test_returns_schema_valid_payload_for_a_well_covered_question(self):
+        payload, is_error = server.call_tool(
+            "answer_pack", {"question": "how do I bind a widget to a data model"})
+        assert not is_error, payload
+        assert "_schema_warnings" not in payload, payload.get("_schema_warnings")
+        assert payload["recommended_action"] in (
+            "answer", "answer_with_caveat", "ask_for_version", "escalate")
+        assert 0 <= payload["confidence"] <= 1
+
+    def test_escalates_on_a_question_the_docs_do_not_cover(self):
+        payload, is_error = server.call_tool(
+            "answer_pack",
+            {"question": "what is the capital of France and how many people live there"})
+        assert not is_error, payload
+        assert payload["recommended_action"] == "escalate"
+        assert payload["evidence"] == [] or payload["confidence"] < 1
+        assert payload["coverage_notes"]
+
+    def test_citations_are_deduplicated_by_url(self):
+        payload, is_error = server.call_tool(
+            "answer_pack", {"question": "how do I bind a widget to a data model"})
+        assert not is_error, payload
+        urls = [c["url"] for c in payload["citations"]]
+        assert len(urls) == len(set(urls))
+
+    def test_respects_a_small_token_budget(self):
+        payload, is_error = server.call_tool(
+            "answer_pack",
+            {"question": "how do I bind a widget to a data model", "token_budget": 1000})
+        assert not is_error, payload
+        assert payload["tokens_used"] <= 1000 or len(payload["evidence"]) <= 1
+
+    def test_caveat_is_null_unless_action_is_answer_with_caveat(self):
+        payload, is_error = server.call_tool(
+            "answer_pack", {"question": "how do I bind a widget to a data model"})
+        assert not is_error, payload
+        if payload["recommended_action"] != "answer_with_caveat":
+            assert payload["caveat"] is None
