@@ -25,11 +25,11 @@ import sys
 import threading
 from typing import Any
 
-from .config import ROOT, settings
-from .errors import KBError
-from .kb import KnowledgeBase
-from .tools.handlers import dispatch
-from .tools.schemas import COMMON, DEFAULT_ENABLED, TOOLS_BY_NAME
+from neutrinos_mcp.config import ROOT, settings
+from neutrinos_mcp.errors import KBError
+from neutrinos_mcp.kb import KnowledgeBase
+from neutrinos_mcp.tools.handlers import dispatch
+from neutrinos_mcp.tools.schemas import COMMON, DEFAULT_ENABLED, TOOLS_BY_NAME
 
 log = logging.getLogger("neutrinos-mcp")
 
